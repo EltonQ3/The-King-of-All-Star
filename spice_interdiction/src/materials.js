@@ -117,7 +117,7 @@
       // Paint: chips open along edges and around scattered impact points.
       float chipN=(1.-smoothstep(.05,.22,nB.a))*smoothstep(.35,.7,macro)+curv*(.35+mid);
       float chip=smoothstep(.55,.8,(chipN+fine*.25)*uWear)*isPaint;
-      vec3 bare=vec3(.33,.31,.29)*(.8+fine*.5);
+      vec3 bare=vec3(.2,.185,.17)*(.8+fine*.4);
       vec3 col=tint*(.82+mid*.22+fine*.08);
       col=mix(col,bare,chip);
       float scratch=smoothstep(.86,.98,tri(P*vec3(7.,7.,.6),tw).b)*isMetal;
@@ -130,9 +130,9 @@
       float dust=clamp((up*.75+.12)*smoothstep(.25,.75,macro*.6+mid*.4)+up*.18,0.,1.)*uDust;
       vec3 dustCol=s2l(vec3(.78,.62,.43))*(.8+fine*.3);
       col=mix(col,dustCol,dust*(.7-.25*isCloth));
-      float kRough=mix(.52,.34,chip); kRough=mix(kRough,.36+mid*.22-scratch*.12,isMetal); kRough=mix(kRough,.74,isPoly); kRough=mix(kRough,.97,isCloth);
+      float kRough=mix(.52,.6,chip); kRough=mix(kRough,.36+mid*.22-scratch*.12,isMetal); kRough=mix(kRough,.74,isPoly); kRough=mix(kRough,.97,isCloth);
       kRough=clamp(kRough+(mid-.5)*.14+dust*.5,.16,1.);
-      float kMetal=clamp(isMetal+chip*.9,0.,1.)*(1.-dust*.75);
+      float kMetal=clamp(isMetal+chip*.55,0.,1.)*(1.-dust*.75);
       diffuseColor.rgb=col;`;
     return inject(mat,'kit'+(opts.key||''),colorCode,`roughnessFactor=kRough;`,`metalnessFactor=kMetal;`,
       `((nC.g*.0022+scratch*.0015)*(1.-isCloth)+isCloth*weave*.0012+dust*nC.g*.004)/uScale`,

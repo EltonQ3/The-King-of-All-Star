@@ -85,7 +85,7 @@
       test(this.pos.x+fx,py+1.72-c,this.pos.z+fz,.145,'head');test(this.pos.x,py+1.34-c,this.pos.z,.25,'body');test(this.pos.x,py+1.02-c*.8,this.pos.z,.24,'body');
       test(this.pos.x,py+.66-c*.4,this.pos.z,.22,'legs');test(this.pos.x,py+.3,this.pos.z,.2,'legs');return best;
     }
-    hear(pos,urgent=true){if(!this.alive||!this.active)return;this.lastKnown=pos.clone();if(this.state==='patrol'){this.state=urgent?'fight':'search';this.aware=urgent?1:.6;this.timer=.5+this.rnd()*.7;}}
+    hear(pos,urgent=true){if(!this.alive||!this.active)return;this.lastKnown=pos.clone();if(this.state==='patrol'||(urgent&&this.state==='search')){const first=this.state==='patrol';this.state=urgent?'fight':'search';this.aware=urgent?1:.6;this.timer=.5+this.rnd()*.7;if(urgent&&first)this.game.onSpotted(this);}}
     hit(damage,zone,from){
       if(!this.alive||!this.active)return false;const g=this.game;this.health-=damage;this.flinch=.3;this.timer=Math.max(this.timer,.4);this.windup=0;this.burstLeft=0;this.hear(g.player.pos,true);
       g.enemies.alertNear(this.pos,24,g.player.pos);
@@ -144,7 +144,7 @@
       if(sight>0){
         // Awareness builds faster up close; a spotted intruder alerts the squad.
         this.aware=Math.min(1,this.aware+dt*(this.state==='patrol'?S.lerp(2.6,.55,S.clamp(sight/def.vision,0,1)):4));this.lostSight=0;
-        if(this.aware>=1){this.lastKnown=p.pos.clone();if(this.state!=='fight'){this.state='fight';this.timer=.35+this.rnd()*.6;g.enemies.alertNear(this.pos,26,p.pos);g.onSpotted(this);}}
+        if(this.aware>=1){this.lastKnown=p.pos.clone();if(this.state!=='fight'){const first=this.state==='patrol';this.state='fight';this.timer=.35+this.rnd()*.6;g.enemies.alertNear(this.pos,26,p.pos);if(first)g.onSpotted(this);}}
       }else{this.lostSight+=dt;if(this.state==='patrol')this.aware=Math.max(0,this.aware-dt*.35);}
       this.seen=sight>0;
       if(this.state==='patrol'){
@@ -210,7 +210,7 @@
 
   // Pool and squad-level helpers.
   S.Enemies=class{
-    constructor(game){this.game=game;this.list=[];for(let i=0;i<12;i++)this.list.push(new S.Enemy(game,i,'trooper'));for(let i=0;i<6;i++)this.list.push(new S.Enemy(game,12+i,'elite'));}
+    constructor(game){this.game=game;this.list=[];for(let i=0;i<18;i++)this.list.push(new S.Enemy(game,i,'trooper'));for(let i=0;i<8;i++)this.list.push(new S.Enemy(game,18+i,'elite'));}
     spawn(kind,x,z,opts){const e=this.list.find(o=>o.kind===kind&&!o.active)||this.list.find(o=>o.kind===kind&&!o.alive);if(!e)return null;e.spawn(x,z,opts);return e;}
     reset(){for(const e of this.list)e.despawn();}
     get living(){let n=0;for(const e of this.list)if(e.active&&e.alive)n++;return n;}

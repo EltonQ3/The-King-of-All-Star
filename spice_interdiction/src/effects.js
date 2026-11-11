@@ -61,7 +61,7 @@
       for(let i=0;i<16;i++){const m=new T.Mesh(cg,this.caseMat);m.visible=false;m.castShadow=true;scene.add(m);this.cases.push({mesh:m,life:0,v:S.v(),spin:S.v()});}this.caseNext=0;
       // Airborne motes around the viewer.
       const mp=[];for(let i=0;i<420;i++)mp.push(S.range(-28,28),S.range(.1,11),S.range(-28,28));const mg=new T.BufferGeometry();mg.setAttribute('position',new T.Float32BufferAttribute(mp,3));
-      this.motes=new T.Points(mg,new T.PointsMaterial({color:new T.Color(1.5,1.2,.8),size:.035,transparent:true,opacity:.55,depthWrite:false,sizeAttenuation:true}));this.motes.frustumCulled=false;scene.add(this.motes);
+      this.motes=new T.Points(mg,new T.PointsMaterial({color:new T.Color(1.5,1.2,.8),size:.045,map:S.softTexture(),transparent:true,opacity:.5,depthWrite:false,sizeAttenuation:true}));this.motes.frustumCulled=false;scene.add(this.motes);
       this.flashLight=new T.PointLight('#ffc27a',0,14,1.6);scene.add(this.flashLight);this.ambientClock=0;this.rnd=S.rng(1234);
     }
     dustColor(k=1){return [.78*k,.62*k,.44*k];}

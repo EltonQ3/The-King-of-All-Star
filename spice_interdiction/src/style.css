@@ -29,7 +29,7 @@ h1{font-family:var(--serif);font-weight:900;font-size:clamp(58px,9.5vw,112px);li
 #title footer{position:absolute;left:5%;right:5%;bottom:22px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.14em;color:#a89d8699}
 
 /* ---- location card ---- */
-#card{position:absolute;inset:0;z-index:9;pointer-events:none;display:flex;align-items:flex-end;padding:0 6% 17vh;color:var(--light);animation:cardin 5.2s ease both}
+#card{position:absolute;inset:0;z-index:9;pointer-events:none;display:flex;align-items:center;padding:0 6% 6vh;color:var(--light);animation:cardin 4.4s ease both}
 #card>div{border-left:3px solid var(--accent);padding-left:18px;text-shadow:0 1px 8px #000a}#card small{display:block;font-size:11px;letter-spacing:.3em;color:var(--accent)}
 #card strong{display:block;font-family:var(--serif);font-size:clamp(26px,3.6vw,40px);letter-spacing:.14em;margin:6px 0}#card span{font-size:12px;letter-spacing:.2em;color:var(--muted)}
 @keyframes cardin{0%{opacity:0;transform:translateX(-14px)}14%{opacity:1;transform:none}82%{opacity:1}100%{opacity:0}}

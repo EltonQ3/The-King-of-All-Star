@@ -12,8 +12,8 @@
       geo.setAttribute('aMask',new T.BufferAttribute(new Float32Array(geo.attributes.position.count*3),3));
       this.ridge=new T.Mesh(geo,S.mats.sand);this.ridge.receiveShadow=true;this.ridge.frustumCulled=false;this.root.add(this.ridge);
       // The maw: ribbed trunk, lip, throat and three rings of crystalline teeth.
-      const b=new S.Batch(),rock=this.mat=S.mineralMaterial('rock','#8d7861',{scale:.35}),pts=[];
-      for(let i=0;i<=28;i++){const y=-50+i*2,rib=i%2?.0:.55;pts.push([10.2+rib+Math.sin(i*.9)*.25,y]);}pts.push([10.9,7],[10.2,8.2],[8.6,8.6],[7.2,7.6]);
+      const b=new S.Batch(),rock=this.mat=S.mineralMaterial('rock','#6d5947',{scale:.35}),pts=[];
+      for(let i=0;i<=34;i++){const y=-62+i*2,rib=i%2?.0:.55;pts.push([10.2+rib+Math.sin(i*.9)*.25,y]);}pts.push([10.9,7],[10.2,8.2],[8.6,8.6],[7.2,7.6]);
       b.tint('#ffffff').add(rock,S.geo.lathe(pts,56,'wormtrunk'),0,0,0);
       b.tint('#3a2a22').add(rock,S.geo.lathe([[7.2,7.6],[6.2,4],[4.8,-2],[3,-12],[.4,-26]],40,'wormthroat'),0,0,0);
       b.tint('#e6dcc6',S.SURF.metal);for(let ring=0;ring<3;ring++){const n=46-ring*8,rr=8.1-ring*1.25,yy=7.9-ring*1.7;for(let i=0;i<n;i++){const a=i/n*Math.PI*2+ring*.07;b.push(Math.cos(a)*rr,yy,Math.sin(a)*rr,0,-a,0).add(S.mats.kit,S.geo.cone(.2,2.6-ring*.4,5),-.9,-.2,0,0,0,1.35).pop();}}
@@ -51,10 +51,10 @@
     updateBreach(dt){
       const b=this.breach,g=this.game,gy=g.world.ground(b.x,b.z);b.t+=dt;const t=b.t;
       // 0-2.5 s ground heaves; 2.5-7 s the maw rises; the harvester tips in; 9 s+ it sinks back.
-      const rise=S.smooth(2.2,7,t),sink=S.smooth(10,17,t);this.maw.position.y=gy-60+rise*56-sink*40;this.maw.rotation.y=t*.05;this.maw.rotation.z=Math.sin(t*.4)*.03;
+      const rise=S.smooth(2.2,7,t),sink=S.smooth(10,17,t);this.maw.position.y=gy-60+rise*98-sink*50;this.maw.rotation.y=t*.05;this.maw.rotation.z=Math.sin(t*.4)*.03;
       const h=b.target,tip=S.smooth(2.6,6.5,t);h.position.set(b.base.x+Math.sin(t*9)*.15*(1-tip),b.base.y-tip*tip*30+Math.sin(t*14)*.1*(1-tip),b.base.z);h.rotation.set(-tip*.75,0,tip*.35);if(tip>=1)h.visible=false;
       g.world.harvester.swallowed=1;
-      b.dust=(b.dust||0)-dt;if(b.dust<=0&&t<14){b.dust=.09;const k=t<2.4?.5:1;g.fx.plume(S.v(b.x,gy+1,b.z),t<2.4?9:15,5,{size:9+rise*9,speed:5+rise*7,vy:3+rise*9,life:5.5,alpha:.34*k,height:4+rise*12});if(t>2.4&&t<8)g.fx.plume(S.v(b.x,gy+10+rise*8,b.z),8,2,{size:12,speed:3,vy:7,life:5,alpha:.26,height:8});}
+      b.dust=(b.dust||0)-dt;if(b.dust<=0&&t<14){b.dust=.09;const k=t<2.4?.5:1;g.fx.plume(S.v(b.x,gy+1,b.z),t<2.4?9:16,5,{size:7+rise*7,speed:6+rise*8,vy:2+rise*5,life:4.5,alpha:.3*k,height:3+rise*6,tone:.8+g.rand()*.5});if(t>2.4&&t<9)g.fx.plume(S.v(b.x,gy+6+rise*20,b.z),11,3,{size:8,speed:4,vy:5,life:3.6,alpha:.24,height:10,tone:.75+g.rand()*.5});}
     }
     drawGraph(){
       if(!this.ctx)return;const c=this.ctx,w=this.graph.width,h=this.graph.height,t=this.clock,k=this.intensity;c.clearRect(0,0,w,h);c.strokeStyle=k>.75?'#ff8a5a':'#d8ad6f';c.lineWidth=1.3;c.beginPath();

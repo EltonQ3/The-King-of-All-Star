@@ -12,7 +12,7 @@
     reset(){this.radioQueue.length=0;this.radioTime=0;$('radio').hidden=true;$('toast').style.opacity=0;this.toastTime=0;this.objKey='';for(const el of this.markerEls.values())el.remove();this.markerEls.clear();}
     radio(speaker,text,seconds=4){this.radioQueue.push({speaker,text,seconds});if(this.radioQueue.length>3)this.radioQueue.splice(0,this.radioQueue.length-3);}
     toast(text,seconds=3.2){$('toast').textContent=text;$('toast').style.opacity=1;this.toastTime=seconds;}
-    showCard(small,title,sub){const c=$('card');$('card-small').textContent=small;$('card-title').textContent=title;$('card-sub').textContent=sub;c.hidden=true;void c.offsetWidth;c.hidden=false;this.cardTime=5.2;}
+    showCard(small,title,sub){const c=$('card');$('card-small').textContent=small;$('card-title').textContent=title;$('card-sub').textContent=sub;c.hidden=true;void c.offsetWidth;c.hidden=false;this.cardTime=4.4;}
     toggleMap(open){this.mapOpen=open;$('map').hidden=!open;if(open)this.drawMap();}
     tick(dt){
       // Radio: one line at a time, typed out, then held.
@@ -58,7 +58,7 @@
         el.className=(mk.optional?'optional ':'')+(off?'edge':'');el.style.left=S.clamp(x,50,innerWidth-50)+'px';el.style.top=S.clamp(y,110,innerHeight-150)+'px';el.style.opacity=dist<3.2?0:(mk.optional?.6:.92);
         el.children[1].textContent=mk.label;el.children[2].textContent=Math.round(dist)+' m';
         // Same marker on the compass tape.
-        const brg=Math.atan2(dir.x,-dir.z)*180/Math.PI,head=((-g.player.yaw*180/Math.PI)%360+360)%360,d=((brg-head+540)%360)-180;if(Math.abs(d)<60){const c=document.createElement('i');c.style.left=(190+d*3)+'px';c.textContent=mk.label;if(mk.optional)c.className='optional';marks.appendChild(c);}
+        const brg=Math.atan2(dir.x,-dir.z)*180/Math.PI,head=((-g.player.yaw*180/Math.PI)%360+360)%360,d=((brg-head+540)%360)-180;if(!mk.optional&&Math.abs(d)<60){const c=document.createElement('i');c.style.left=(190+d*3)+'px';c.textContent=mk.label;if(mk.optional)c.className='optional';marks.appendChild(c);}
       }
       for(const [id,el] of this.markerEls)if(!seen.has(id)){el.remove();this.markerEls.delete(id);}
     }
@@ -74,10 +74,10 @@
       // The two approaches.
       const route=(pts,colr)=>{c.strokeStyle=colr;c.lineWidth=2;c.setLineDash([7,6]);c.beginPath();pts.forEach((p,i)=>i?c.lineTo(X(p[0]),Z(p[1])):c.moveTo(X(p[0]),Z(p[1])));c.stroke();c.setLineDash([]);};
       route([[0,52],[-2,22],[-12.5,12],[-12.5,-4],[-14,-13],[-14,-28],[-9,-40],[-3,-47],[-3,-58]],'#9fd8ffaa');route([[0,52],[2,22],[16.2,12],[16.2,-4],[14,-16],[14.5,-25],[10,-40],[-3,-47]],'#e0a85caa');
-      c.font='600 12px sans-serif';c.textAlign='center';c.fillStyle='#9fd8ff';c.fillText('西側維修道',X(-28),Z(13));c.fillStyle='#e0a85c';c.fillText('東側採收場',X(34),Z(13));
-      c.fillStyle='#cdbf9f88';c.font='11px sans-serif';c.fillText('控制塔',X(-31),Z(-20));c.fillText('採收機',X(25),Z(-22));c.fillText('補給站',X(41.5),Z(-1));c.fillText('北門',X(8),Z(-54.5));c.fillText('岩隙（起點）',X(0),Z(60));
+      c.font='600 16px sans-serif';c.textAlign='center';c.fillStyle='#9fd8ff';c.fillText('西側維修道',X(-28),Z(13));c.fillStyle='#e0a85c';c.fillText('東側採收場',X(34),Z(13));
+      c.fillStyle='#cdbf9faa';c.font='14px sans-serif';c.fillText('控制塔',X(-31),Z(-20));c.fillText('採收機',X(25),Z(-22));c.fillText('補給站',X(41.5),Z(-1));c.fillText('北門',X(8),Z(-54.5));c.fillText('岩隙（起點）',X(0),Z(60));
       const mark=(pos,label,done,optional,failed)=>{const x=X(pos.x),z=Z(pos.z);c.save();c.translate(x,z);c.rotate(Math.PI/4);c.lineWidth=2;c.strokeStyle=done?'#9bbfa5':failed?'#a36650':optional?'#e0cba8':'#e0a85c';c.fillStyle=done?'#9bbfa5':'#e0a85c44';if(done||!optional)c.fillRect(-5,-5,10,10);c.strokeRect(-5,-5,10,10);c.restore();
-        c.font='600 12px sans-serif';c.textAlign='left';c.fillStyle=done?'#9bbfa5':failed?'#a36650':'#f4ead6';c.fillText(label,x+11,z+4);};
+        c.font='600 15px sans-serif';c.textAlign='left';c.fillStyle=done?'#9bbfa5':failed?'#a36650':'#f4ead6';c.fillText(label,x+11,z+4);};
       const legend=$('map-legend');legend.textContent='';
       for(const o of m.objectives()){const it=m.items.find(i=>i.id===o.id),pos=o.id==='board'?w.points.pad:it.point.pos;mark(pos,it.short,o.done,o.optional,o.failed);
         const li=document.createElement('li');li.className=(o.done?'done ':'')+(o.optional?'optional ':'')+(!o.done&&!o.active?'idle':'');li.innerHTML='<i></i>';li.appendChild(document.createTextNode(o.text+(o.optional?(o.failed?'（已失效）':'（可選）'):'')));legend.appendChild(li);}

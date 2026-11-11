@@ -76,14 +76,15 @@
       else if(this.alarm==='cut'&&!this.events.cutSaid){this.events.cutSaid=true;g.radio('哨兵','他們在按警報，沒有回應。只剩眼前這幾個。',4);}
     }
     onKill(enemy){this.stats.kills++;}
-    enqueue(list,group){for(const kind of list)this.queue.push({kind,group});}
+    // New arrivals queue up; everyone already alive is told where the intruder is.
+    enqueue(list,group){for(const kind of list)this.queue.push({kind,group});if(group!=='alarm')this.game.enemies.alertAll(this.game.player.pos);}
     // Bring one queued soldier in at a point the player cannot see; respects the live cap.
     pumpQueue(dt){
       if(!this.queue.length)return;this.queueClock-=dt;const g=this.game;if(this.queueClock>0||g.enemies.living>=g.maxAlive)return;
       const p=g.player,eye=p.eye(),pts=(this.queue[0].group==='pursuit'&&g.world.gate.open>.6?SPAWNS.concat([[-20,-47],[14,-45]]):SPAWNS);let best=null,bs=-1e9;
       for(const [x,z] of pts){const y=g.world.ground(x,z),d=Math.hypot(x-p.pos.x,z-p.pos.z);if(d<20)continue;const hidden=!g.world.collision.visible(eye,S.v(x,y+1.5,z));let s=(hidden?100:0)-Math.abs(d-48)*.6+g.rand()*8;
         for(const e of g.enemies.list)if(e.active&&e.alive&&Math.hypot(e.pos.x-x,e.pos.z-z)<2)s-=60;if(s>bs){bs=s;best=[x,z];}}
-      if(!best)return;const q=this.queue.shift(),e=g.enemies.spawn(q.kind,best[0]+(g.rand()-.5),best[1]+(g.rand()-.5),{alert:true,group:q.group});if(e){e.lastKnown=p.pos.clone();}this.queueClock=.7;
+      if(!best)return;const q=this.queue[0],e=g.enemies.spawn(q.kind,best[0]+(g.rand()-.5),best[1]+(g.rand()-.5),{alert:true,group:q.group});if(e){this.queue.shift();e.lastKnown=p.pos.clone();}this.queueClock=e?.7:2;
     }
     update(dt){
       const g=this.game,p=g.player,f=this.flags;

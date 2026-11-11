@@ -1,7 +1,7 @@
 {
   "artifact": "Spice_Interdiction_v0.3.html",
-  "bytes": 982824,
-  "sha256": "da06ba2ae199a48165bc12a204341a7c67bf574cd493018b52a2c4e26819a5cd",
+  "bytes": 984351,
+  "sha256": "8fc0dc2fce19c4090ddb8a63410c174e0991937958f5277154af1ade2dcd054c",
   "sources": [
     "core.js",
     "materials.js",

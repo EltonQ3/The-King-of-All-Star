@@ -34,7 +34,7 @@
 
   S.Game=class{
     constructor(canvas,opts={}){
-      this.canvas=canvas;this.time=0;this.playTime=0;this.state='title';this.frames=0;this.quality='high';this.motionReduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.weaponSway=new T.Vector2();this.lastDt=1/60;this.baseFov=78;this.difficulty=1;this.maxAlive=9;this.rand=S.rng(20261);this.testMode=!!opts.test;
+      this.canvas=canvas;this.time=0;this.playTime=0;this.state='title';this.frames=0;this.quality='high';this.motionReduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.weaponSway=new T.Vector2();this.lastDt=1/60;this.baseFov=78;this.difficulty=1;this.maxAlive=14;this.rand=S.rng(20261);this.testMode=!!opts.test;
       const r=this.renderer=new T.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance'});r.outputColorSpace=T.SRGBColorSpace;r.toneMapping=T.NoToneMapping;r.shadowMap.enabled=true;r.shadowMap.type=T.PCFSoftShadowMap;r.autoClear=false;
       this.scene=new T.Scene();this.camera=new T.PerspectiveCamera(this.baseFov,1,.07,2600);this.camera.rotation.order='YXZ';
       S.initMaterials();this.world=new S.World(this.scene,r);this.sky=this.world.sky;new S.Harvester(this.world);new S.Thopter(this.world);
@@ -76,7 +76,7 @@
     }
     setQuality(q,save=true){
       this.quality=['low','medium','high','ultra'].includes(q)?q:'high';const cfg={low:[.8,1,2048,54,0],medium:[1,1.25,2048,58,0],high:[1,1.5,4096,62,4],ultra:[1,2,4096,62,4]}[this.quality];
-      this.renderer.setPixelRatio(Math.min(devicePixelRatio,cfg[1])*cfg[0]);this.samples=cfg[4];this.sky.setShadowQuality(this.testMode?1024:cfg[2],cfg[3]);
+      this.renderer.setPixelRatio(Math.min(devicePixelRatio,cfg[1])*cfg[0]);this.samples=cfg[4];this.sky.setShadowQuality(this.testMode&&this.quality==='low'?1024:cfg[2],cfg[3]);
       $('quality').value=this.quality;$('quality-pause').value=this.quality;this.resize();
     }
     resize(){
@@ -93,12 +93,12 @@
       else{this.deaths=0;this.player.reset();this.mission.reset();this.state='intro';this.introTime=0;this.hud.showCard('阿拉基斯 · 北半球深沙漠','第九採收區 · 岩隙','弗瑞曼突襲 · 單人滲透');}
       this.input.active=true;this.input.requestLock();this.post.fade=0;this.hud.update();
     }
-    pause(){if(this.state!=='playing')return;this.state='paused';this.input.active=false;this.input.clear();if(document.pointerLockElement)document.exitPointerLock();this.audio.setPaused(true);$('pause-checkpoint').hidden=!this.mission.checkpoint;this.hud.update();}
+    pause(){if(this.state!=='playing')return;this.state='paused';this.input.active=false;this.input.clear();this.input.releaseLock();this.audio.setPaused(true);$('pause-checkpoint').hidden=!this.mission.checkpoint;this.hud.update();}
     resume(){if(this.settingsFromTitle&&this.state==='title'){this.settingsFromTitle=false;$('pause').hidden=true;$('pause').classList.remove('from-title');return;}
       if(this.state!=='paused')return;this.hud.toggleMap(false);this.state='playing';this.input.clear();this.input.active=true;this.audio.start();this.audio.setPaused(false);this.input.requestLock();this.hud.update();}
     openMap(){if(this.state!=='playing')return;this.pause();this.hud.toggleMap(true);this.hud.update();}
     closeMap(){if(this.hud.mapOpen){this.hud.toggleMap(false);this.resume();}}
-    beginOutro(){this.state='outro';this.input.active=false;this.input.clear();if(document.pointerLockElement)document.exitPointerLock();this.weaponLowered=true;this.hud.update();}
+    beginOutro(){this.state='outro';this.input.active=false;this.input.clear();this.input.releaseLock();this.weaponLowered=true;this.hud.update();}
     finish(){this.state='complete';this.audio.sting('complete');this.hud.debrief();this.hud.update();}
     radio(speaker,text,seconds){this.hud.radio(speaker,text,seconds);}
     toast(text,seconds){this.hud.toast(text,seconds);}
@@ -136,7 +136,7 @@
     damage(amount,source=null){
       if(this.state!=='playing'||this.player.health<=0)return;const p=this.player;amount*=this.difficulty;p.health=Math.max(0,p.health-amount);this.mission.stats.damage+=amount;this.lastHurt=this.playTime;this.hurt=Math.min(1,this.hurt+.45);
       if(source){const d=source.clone().sub(p.pos);this.damageAngle=Math.atan2(d.x,-d.z)+p.yaw;}this.kickAngleVelocity+=.6;this.audio.hurt();
-      if(p.health<=0){this.state='dead';this.deadTime=0;this.deaths=(this.deaths||0)+1;this.input.active=false;this.input.clear();if(document.pointerLockElement)document.exitPointerLock();this.audio.sting('fail');
+      if(p.health<=0){this.state='dead';this.deadTime=0;this.deaths=(this.deaths||0)+1;this.input.active=false;this.input.clear();this.input.releaseLock();this.audio.sting('fail');
         $('retry-checkpoint').hidden=!this.mission.checkpoint;$('dead-tip').textContent=this.mission.checkpoint?'檢查點保留了前哨目標：重試會從北門前開始，不必重走岩隙。':'守衛開火前，面罩會亮起。利用掩體阻擋射線；蹲伏較難被發現，脫離火力後蒸餾服會慢慢自行修補。';this.hud.update();}
     }
     onKill(enemy,zone){this.audio.kill();this.fx.puff(S.v(enemy.pos.x,enemy.pos.y+.3,enemy.pos.z),.8,3);this.mission.onKill(enemy);}
@@ -153,9 +153,10 @@
         if(this.introTime>=3.4){this.state='playing';this.letterbox=0;this.equip=1;this.radio('哨兵','沿岩隙前進。前哨有兩個入口：西側維修道，東側採收場。按 M 看戰術地圖。',7);}
         this.world.update(dt,this.time,this.worldState());this.world.harvester.update(dt,this.time);this.fx.update(dt,this.camera);this.enemies.update(dt);}
       else if(st==='playing'){
-        this.playTime+=dt;const p=this.player;p.update(dt);
+        this.playTime+=dt;const p=this.player;p.update(dt);this.syncCamera();
         this.kickVelocity+=(-230*this.kickPosition-26*this.kickVelocity)*dt;this.kickPosition+=this.kickVelocity*dt;this.kickAngleVelocity+=(-190*this.kickAngle-22*this.kickAngleVelocity)*dt;this.kickAngle+=this.kickAngleVelocity*dt;this.kickRoll=S.damp(this.kickRoll,0,14,dt);
         this.landPulse=S.damp(this.landPulse,0,11,dt);this.shotHeat=Math.max(0,this.shotHeat-dt*1.5);this.cooldown=Math.max(0,this.cooldown-dt);this.flash=Math.max(0,this.flash-dt);this.hurt=Math.max(0,this.hurt-dt*1.2);this.hitTime=Math.max(0,this.hitTime-dt);
+        this.sprintPose=S.damp(this.sprintPose,p.sprinting&&Math.hypot(p.vel.x,p.vel.z)>4?1:0,9,dt);this.lowerPose=S.damp(this.lowerPose,this.weaponLowered?1:0,8,dt);this.equip=S.damp(this.equip,0,3.4,dt);
         if(i.consume('KeyR'))this.reload();if(i.consume('KeyQ'))this.useKit();
         if(this.reloadTime>0){this.reloadTime-=dt;const rp=1-this.reloadTime/this.reloadDuration;if(rp>.5&&this.reloadStage===0){this.audio.reload('seat');this.reloadStage=1;}if(rp>.78&&this.reloadStage===1){this.audio.reload('bolt');this.reloadStage=2;}
           if(this.reloadTime<=0){const n=Math.min(MAG-this.ammo,this.reserve);this.ammo+=n;this.reserve-=n;this.reloadTime=0;}}
@@ -180,7 +181,7 @@
     syncCamera(){
       const cam=this.camera,p=this.player,st=this.state;
       if(this.debugCam){const c=this.debugCam;cam.position.set(c[0],c[1],c[2]);cam.lookAt(c[3],c[4],c[5]);cam.fov=c[6]||this.baseFov;cam.updateProjectionMatrix();cam.updateMatrixWorld(true);return;}
-      if(st==='title'){const t=this.time*.03;cam.position.set(5+Math.sin(t)*3,5.2+Math.sin(t*.7)*.4,31+Math.cos(t)*2);cam.lookAt(1,6.5,-30);cam.fov=50;}
+      if(st==='title'){const t=this.time*.03;cam.position.set(2.5+Math.sin(t)*3,4.6+Math.sin(t*.7)*.4,19+Math.cos(t)*1.5);cam.lookAt(3,7,-30);cam.fov=52;}
       else if(st==='intro'){const k=S.smooth(0,3.2,this.introTime),eye=p.eye();cam.position.set(eye.x+(1-k)*1.2,eye.y+(1-k)*2.6,eye.z+(1-k)*7);cam.rotation.set(-(1-k)*.12,0,0,'YXZ');cam.fov=S.lerp(52,this.baseFov,k);}
       else if(st==='outro'){this.extraction.camera(cam);}
       else{

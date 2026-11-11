@@ -5,12 +5,12 @@
   S.Input=class{
     constructor(canvas){
       this.canvas=canvas;this.keys=new Set();this.actions=new Set();this.dx=0;this.dy=0;this.fire=false;this.ads=false;this.locked=false;this.dragging=false;this.sensitivity=1;this.invertY=false;
-      this.touch=(navigator.maxTouchPoints>0)&&matchMedia('(pointer:coarse)').matches;this.stick={x:0,y:0};this.active=false;this.interactHeld=false;
+      this.touch=(navigator.maxTouchPoints>0)&&matchMedia('(pointer:coarse)').matches;this.stick={x:0,y:0};this.active=false;this.interactHeld=false;this.releasing=false;
       const block=['KeyW','KeyA','KeyS','KeyD','Space','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Tab','KeyE','KeyC'];
       addEventListener('keydown',e=>{if(block.includes(e.code)&&this.active)e.preventDefault();if(e.code==='Tab')e.preventDefault();if(!e.repeat)this.actions.add(e.code);this.keys.add(e.code);});
       addEventListener('keyup',e=>this.keys.delete(e.code));
       addEventListener('blur',()=>this.clear());
-      document.addEventListener('pointerlockchange',()=>{const was=this.locked;this.locked=document.pointerLockElement===canvas;if(was&&!this.locked&&this.onUnlock)this.onUnlock();});
+      document.addEventListener('pointerlockchange',()=>{const was=this.locked;this.locked=document.pointerLockElement===canvas;if(was&&!this.locked){if(this.releasing)this.releasing=false;else if(this.onUnlock)this.onUnlock();}});
       document.addEventListener('mousemove',e=>{if(this.active&&(this.locked||this.dragging)){this.dx+=e.movementX;this.dy+=e.movementY;}});
       canvas.addEventListener('mousedown',e=>{if(!this.active)return;if(e.button===0){this.fire=true;if(!this.locked){this.dragging=true;this.requestLock();}}if(e.button===2)this.ads=true;});
       addEventListener('mouseup',e=>{if(e.button===0){this.fire=false;this.dragging=false;}if(e.button===2)this.ads=false;});
@@ -18,6 +18,8 @@
       this.installTouch();
     }
     get interact(){return this.keys.has('KeyE')||this.keys.has('KeyF')||this.interactHeld;}
+    // Deliberate release (pause, death, lift-off): the resulting unlock event must not pause again.
+    releaseLock(){if(document.pointerLockElement){this.releasing=true;document.exitPointerLock();}}
     requestLock(){if(this.touch)return;try{const p=this.canvas.requestPointerLock?.();if(p&&p.catch)p.catch(()=>{});}catch{}}
     clear(){this.keys.clear();this.actions.clear();this.fire=false;this.ads=false;this.dragging=false;this.interactHeld=false;this.dx=this.dy=0;this.stick.x=this.stick.y=0;}
     consume(code){const yes=this.actions.has(code);this.actions.delete(code);return yes;}

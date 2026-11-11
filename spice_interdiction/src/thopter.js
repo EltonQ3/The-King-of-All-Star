@@ -68,8 +68,8 @@
         flight=Math.max(.16,1-this.t/2.5);this.doorOpen=S.damp(this.doorOpen,1,2.5,dt);this.body.rotation.x=S.damp(this.body.rotation.x,0,3,dt);this.body.rotation.z=S.damp(this.body.rotation.z,0,3,dt);this.speed=0;
       }else if(this.phase==='depart'){
         const u=this.t;this.doorOpen=S.damp(this.doorOpen,0,3,dt);flight=1;
-        const climb=Math.min(u,3)*1.5+Math.max(0,u-3)*5.5+Math.pow(Math.max(0,u-1),2)*.35;
-        const fwd=Math.pow(Math.max(0,u-2.2),2)*2.1;const yaw=pad.yaw+S.smooth(1.5,7,u)*.9;
+        const climb=S.smooth(0,7.5,u)*37+u*.6;
+        const fwd=S.smooth(1.6,14,u)*62;const yaw=pad.yaw+S.smooth(1.5,7,u)*.9;
         r.rotation.y=yaw;r.position.set(pad.pos.x+Math.sin(yaw)*fwd,pad.pos.y+climb,pad.pos.z+Math.cos(yaw)*fwd);
         this.body.rotation.x=S.damp(this.body.rotation.x,S.smooth(2,6,u)*.2,2,dt);this.body.rotation.z=S.damp(this.body.rotation.z,-S.smooth(1.5,6,u)*.16,2,dt);this.speed=10;
       }else if(this.phase==='hold'){r.position.y=pad.pos.y+9+Math.sin(time*.9)*.25;}

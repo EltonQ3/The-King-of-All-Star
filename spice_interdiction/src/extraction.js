@@ -30,7 +30,7 @@
         if(!this.said.hurry&&this.t>30){this.said.hurry=true;g.radio('飛行員','不能再等了，快上來！',4);}
       }else if(this.phase==='outro'){
         this.outro+=dt;const t=this.outro;g.letterbox=S.smooth(0,1,t);
-        if(!this.said.breach&&t>3.2){this.said.breach=true;g.worm.startBreach(g.world.harvester.group);g.audio.sting('worm');}
+        if(!this.said.breach&&t>2.4){this.said.breach=true;g.worm.startBreach(g.world.harvester.group);g.audio.sting('worm');}
         if(!this.said.last&&t>8.5){this.said.last=true;g.radio('哨兵','沙海收回了它的香料。穴地見。',5);}
         if(t<3&&th.altitude<14){this.wash=(this.wash||0)-dt;if(this.wash<=0){this.wash=.1;g.fx.plume(S.v(th.root.position.x,g.world.points.pad.y+.3,th.root.position.z),6,3,{size:4,speed:7,vy:.7,life:2.2,alpha:.24});}}
         g.post.fade=S.smooth(13.5,15.5,t);if(t>15.6){this.phase='done';g.finish();}
@@ -39,10 +39,12 @@
     // Camera for the lift-off: first from the open door, then a chase view that holds
     // the aircraft in the foreground and the harvester behind it.
     camera(cam){
-      const g=this.game,th=g.world.thopter,t=this.outro,r=th.root,h=g.world.harvester.base.clone().add(S.v(0,7,0));
-      const door=r.localToWorld(S.v(-2.1,2.75,-.3)),chase=r.position.clone().add(S.v(-17-t*.6,5.5+t*.25,-13-t*.5));
-      const k=S.smooth(2.4,4.4,t),pos=door.lerp(chase,k),look=r.position.clone().add(S.v(0,2,0)).lerp(h,S.lerp(.75,.55,k));
-      cam.position.copy(pos);cam.lookAt(look);cam.rotation.z+=Math.sin(t*1.3)*.012*(1-k*.5);cam.fov=S.lerp(74,52,k);
+      const g=this.game,th=g.world.thopter,t=this.outro,r=th.root,h=g.world.harvester.base.clone().add(S.v(0,7+S.smooth(4.5,10,this.outro)*20,0));
+      // Chase point: beyond the aircraft on the line from the harvester, so both stay in frame.
+      const away=r.position.clone().sub(h);away.y=0;away.normalize();
+      const door=r.localToWorld(S.v(-2.1,2.75,-.3)),chase=r.position.clone().addScaledVector(away,13+t*.3).add(S.v(-away.z*4,7.5,away.x*4));
+      const k=S.smooth(2.4,4.6,t),pos=door.lerp(chase,k),look=r.position.clone().add(S.v(0,1.5,0)).lerp(h,S.lerp(.7,.62,k));
+      cam.position.copy(pos);cam.lookAt(look);cam.rotation.z+=Math.sin(t*1.3)*.012*(1-k*.5);cam.fov=S.lerp(74,S.lerp(50,38,S.smooth(5,12,t)),k);
     }
     snapshot(){return {phase:this.phase,t:+this.t.toFixed(1),remaining:+this.remaining.toFixed(1),waves:{...this.waves},outro:+this.outro.toFixed(1)};}
   };

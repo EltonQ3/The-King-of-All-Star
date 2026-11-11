@@ -7,7 +7,7 @@
   const K=S.Kit,C=K.C,M=S.SURF;
   const SIGHT_Y=.0935,SIGHT_Z=-.02;
   S.makeWeapon=function(){
-    const kit=S.viewKit=S.kitMaterial({dust:.3,key:'vm',env:1.25,glow:5,scale:7,wear:.62});
+    const kit=S.viewKit=S.kitMaterial({dust:.26,key:'vm',env:1.25,glow:5,scale:7,wear:.34});
     const root=new T.Group(),gun=new T.Group();root.add(gun);
     const steel='#3a4043',edge='#7d8385',ceramic='#6b6252',brass='#9c7a3e',cloth='#5d5341',glove='#2f2b26',suit='#4a4438',plate='#3d3a33';
     const b=new S.Batch();
@@ -17,6 +17,12 @@
     b.tint(steel).cbox(kit,0,.033,-.36,.036,.02,.33,.004);                           // top strap
     for(let i=0;i<9;i++){b.tint(C.black,M.polymer);for(const s of [-1,1])b.cbox(kit,s*.0265,.006,-.225-i*.033,.003,.022,.02,.002);b.tint(steel).cbox(kit,0,.046,-.212-i*.033,.03,.008,.014,.002);}
     b.tint(steel);for(let i=0;i<7;i++)b.cbox(kit,0,.068,-.16+i*.033,.03,.008,.014,.002);  // receiver rail
+    // Left-side furniture: recessed panel, bolt release, lightening cuts, sling stud.
+    b.tint(C.black,M.polymer).cbox(kit,-.0255,.004,-.075,.003,.04,.13,.002);b.tint(steel).cbox(kit,-.0275,.004,-.075,.002,.028,.11,.002);
+    b.tint(edge,M.metal).cbox(kit,-.028,.018,.04,.004,.014,.03,.002).cyl(kit,-.027,-.02,.12,.006,.006,8,'x');
+    for(let i=0;i<4;i++)b.tint(C.black,M.polymer).cbox(kit,-.0262,-.022,-.13+i*.03,.003,.008,.018,.001,0,0,0);
+    b.tint(brass,M.metal).cbox(kit,-.0275,.03,-.16,.003,.006,.04,.001);
+    for(const s of [-1,1]){b.tint(steel).cbox(kit,s*.027,-.004,-.36,.004,.012,.3,.002);for(let i=0;i<8;i++)b.tint(C.black,M.polymer).cbox(kit,s*.0295,-.004,-.24-i*.032,.002,.008,.012,.001);}
     // Barrel, gas block and ported muzzle brake.
     b.tint(steel).cyl(kit,0,.008,-.61,.0115,.2,14,'z').cbox(kit,0,.014,-.545,.03,.04,.035,.005);
     b.tint(edge,M.metal).add(kit,S.geo.lathe([[.012,0],[.019,.004],[.019,.03],[.0165,.034],[.0165,.05],[.019,.054],[.019,.078],[.014,.082],[.0085,.082]],16,'brake'),0,.008,-.708,-Math.PI/2,0,0);
@@ -92,8 +98,6 @@
   S.poseWeapon=function(game,dt){
     const p=game.player,w=game.weapon,u=w.userData,g=u.gun,a=ez(p.aim),motion=game.motionReduced?.3:1;
     const speed=Math.hypot(p.vel.x,p.vel.z),move=Math.min(1,speed/4.6)*(p.grounded?1:.25);
-    game.sprintPose=S.damp(game.sprintPose||0,p.sprinting&&speed>4?1:0,9,dt);game.lowerPose=S.damp(game.lowerPose||0,game.weaponLowered?1:0,8,dt);
-    game.equip=S.damp(game.equip??1,0,3.2,dt);
     const sp=game.sprintPose*(1-a),low=Math.max(game.lowerPose,game.equip);
     // Stride: lateral figure-of-eight, stronger when sprinting, nearly still in ADS.
     const k=(1-a*.86)*motion,bx=Math.sin(p.bob)*(.0055+.011*sp)*move*k,by=(Math.abs(Math.cos(p.bob))*(.0065+.012*sp)-.003)*move*k;
@@ -101,7 +105,7 @@
     // Reload beats: cant, strip, seat, charge.
     let cant=0,drop=0,reach=0,charge=0;
     if(game.reloadTime>0){const t=1-game.reloadTime/game.reloadDuration;cant=seg(t,0,.14)*(1-seg(t,.82,1));drop=seg(t,.16,.3)*(1-seg(t,.46,.6));reach=seg(t,.1,.26)*(1-seg(t,.62,.74));charge=seg(t,.72,.8)*(1-seg(t,.86,.94));}
-    const hipX=.115,hipY=-.118,hipZ=-.31;
+    const hipX=.128,hipY=-.142,hipZ=-.37;
     w.position.set(S.lerp(hipX,0,a)+bx+sw.x*.9+sp*.035+low*.05-cant*.035,
       S.lerp(hipY,-u.sight.y,a)-by+breathe+sw.y*.7-sp*.045-low*.16+cant*.035-(game.landPulse||0)*1.4+(p.grounded?0:S.clamp(p.vy*.0035,-.02,.02)),
       S.lerp(hipZ,-.25,a)+(game.kickPosition||0)*(1-a*.35)+sp*.05+low*.06+cant*.03);
