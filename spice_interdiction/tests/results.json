@@ -1,0 +1,1101 @@
+{
+  "artifact": "Spice_Interdiction_v0.3.html",
+  "sha256": "094a813dbfd3dd54f03927571b70c6258b41588b7e21527d88f1b0bd6101ee98",
+  "date": "2026-11-11T13:29:49.610Z",
+  "passed": 47,
+  "failed": 0,
+  "results": [
+    {
+      "group": "routes",
+      "name": "west: spawn to debrief through real input, no teleport",
+      "pass": true,
+      "detail": {
+        "done": true,
+        "failed": null,
+        "order": [
+          "relay@19.1",
+          "terminal@25.0",
+          "harvester@32.6",
+          "beacon@41.8"
+        ],
+        "steps": 8327,
+        "state": "complete",
+        "playTime": 119.78,
+        "health": 100,
+        "shots": 113,
+        "hits": 56,
+        "kills": 16,
+        "damage": 8,
+        "flags": {
+          "relay": true,
+          "terminal": true,
+          "harvester": true,
+          "supply": false,
+          "beacon": true,
+          "board": true
+        },
+        "alarm": "cut",
+        "alarmWave": false,
+        "route": "west",
+        "reserve": 24,
+        "kits": 1,
+        "teleports": 0,
+        "boardedWith": 1,
+        "maxAlive": 10,
+        "errors": []
+      }
+    },
+    {
+      "group": "routes",
+      "name": "west: boarding was legal with enemies still alive",
+      "pass": true,
+      "detail": {
+        "boardedWith": 1
+      }
+    },
+    {
+      "group": "routes",
+      "name": "west: relay cut before any alarm -> no alarm wave",
+      "pass": true,
+      "detail": {
+        "done": true,
+        "failed": null,
+        "order": [
+          "relay@19.1",
+          "terminal@25.0",
+          "harvester@32.6",
+          "beacon@41.8"
+        ],
+        "steps": 8327,
+        "state": "complete",
+        "playTime": 119.78,
+        "health": 100,
+        "shots": 113,
+        "hits": 56,
+        "kills": 16,
+        "damage": 8,
+        "flags": {
+          "relay": true,
+          "terminal": true,
+          "harvester": true,
+          "supply": false,
+          "beacon": true,
+          "board": true
+        },
+        "alarm": "cut",
+        "alarmWave": false,
+        "route": "west",
+        "reserve": 24,
+        "kits": 1,
+        "teleports": 0,
+        "boardedWith": 1,
+        "maxAlive": 10,
+        "errors": []
+      }
+    },
+    {
+      "group": "routes",
+      "name": "west run data",
+      "pass": true,
+      "detail": {
+        "done": true,
+        "failed": null,
+        "order": [
+          "relay@19.1",
+          "terminal@25.0",
+          "harvester@32.6",
+          "beacon@41.8"
+        ],
+        "steps": 8327,
+        "state": "complete",
+        "playTime": 119.78,
+        "health": 100,
+        "shots": 113,
+        "hits": 56,
+        "kills": 16,
+        "damage": 8,
+        "flags": {
+          "relay": true,
+          "terminal": true,
+          "harvester": true,
+          "supply": false,
+          "beacon": true,
+          "board": true
+        },
+        "alarm": "cut",
+        "alarmWave": false,
+        "route": "west",
+        "reserve": 24,
+        "kits": 1,
+        "teleports": 0,
+        "boardedWith": 1,
+        "maxAlive": 10,
+        "errors": []
+      }
+    },
+    {
+      "group": "routes",
+      "name": "east: spawn to debrief through real input, no teleport",
+      "pass": true,
+      "detail": {
+        "done": true,
+        "failed": null,
+        "order": [
+          "supply@30.3",
+          "harvester@39.1",
+          "terminal@51.2",
+          "beacon@59.8"
+        ],
+        "steps": 9408,
+        "state": "complete",
+        "playTime": 137.8,
+        "health": 100,
+        "shots": 200,
+        "hits": 92,
+        "kills": 25,
+        "damage": 124,
+        "flags": {
+          "relay": false,
+          "terminal": true,
+          "harvester": true,
+          "supply": true,
+          "beacon": true,
+          "board": true
+        },
+        "alarm": "active",
+        "alarmWave": true,
+        "route": "east",
+        "reserve": 48,
+        "kits": 2,
+        "teleports": 0,
+        "boardedWith": 2,
+        "maxAlive": 10,
+        "errors": []
+      }
+    },
+    {
+      "group": "routes",
+      "name": "east: boarding was legal with enemies still alive",
+      "pass": true,
+      "detail": {
+        "boardedWith": 2
+      }
+    },
+    {
+      "group": "routes",
+      "name": "east: relay intact -> alarm and its wave; supply taken",
+      "pass": true,
+      "detail": {
+        "done": true,
+        "failed": null,
+        "order": [
+          "supply@30.3",
+          "harvester@39.1",
+          "terminal@51.2",
+          "beacon@59.8"
+        ],
+        "steps": 9408,
+        "state": "complete",
+        "playTime": 137.8,
+        "health": 100,
+        "shots": 200,
+        "hits": 92,
+        "kills": 25,
+        "damage": 124,
+        "flags": {
+          "relay": false,
+          "terminal": true,
+          "harvester": true,
+          "supply": true,
+          "beacon": true,
+          "board": true
+        },
+        "alarm": "active",
+        "alarmWave": true,
+        "route": "east",
+        "reserve": 48,
+        "kits": 2,
+        "teleports": 0,
+        "boardedWith": 2,
+        "maxAlive": 10,
+        "errors": []
+      }
+    },
+    {
+      "group": "routes",
+      "name": "east run data",
+      "pass": true,
+      "detail": {
+        "done": true,
+        "failed": null,
+        "order": [
+          "supply@30.3",
+          "harvester@39.1",
+          "terminal@51.2",
+          "beacon@59.8"
+        ],
+        "steps": 9408,
+        "state": "complete",
+        "playTime": 137.8,
+        "health": 100,
+        "shots": 200,
+        "hits": 92,
+        "kills": 25,
+        "damage": 124,
+        "flags": {
+          "relay": false,
+          "terminal": true,
+          "harvester": true,
+          "supply": true,
+          "beacon": true,
+          "board": true
+        },
+        "alarm": "active",
+        "alarmWave": true,
+        "route": "east",
+        "reserve": 48,
+        "kits": 2,
+        "teleports": 0,
+        "boardedWith": 2,
+        "maxAlive": 10,
+        "errors": []
+      }
+    },
+    {
+      "group": "routes",
+      "name": "route choice changes the fight (west faces fewer enemies than east)",
+      "pass": true,
+      "detail": {
+        "west": 16,
+        "east": 25
+      }
+    },
+    {
+      "group": "reinforcements",
+      "name": "live enemy count never exceeds the cap during either playthrough",
+      "pass": true,
+      "detail": {
+        "west": 10,
+        "east": 10
+      }
+    },
+    {
+      "group": "interaction",
+      "name": "beacon refuses before both objectives, with a locked prompt",
+      "pass": true,
+      "detail": {
+        "beaconEarly": false,
+        "lockedPrompt": true,
+        "gateZ": -51.209999999999994,
+        "gate": 0,
+        "mid": 0.33333333333333315,
+        "afterRelease": 0,
+        "notDone": true,
+        "afterLeave": 0,
+        "throughWall": false,
+        "done": true,
+        "promptAfter": null,
+        "screen": "done0.00"
+      }
+    },
+    {
+      "group": "interaction",
+      "name": "north gate stays shut and solid while the harvester runs",
+      "pass": true,
+      "detail": {
+        "beaconEarly": false,
+        "lockedPrompt": true,
+        "gateZ": -51.209999999999994,
+        "gate": 0,
+        "mid": 0.33333333333333315,
+        "afterRelease": 0,
+        "notDone": true,
+        "afterLeave": 0,
+        "throughWall": false,
+        "done": true,
+        "promptAfter": null,
+        "screen": "done0.00"
+      }
+    },
+    {
+      "group": "interaction",
+      "name": "hold shows progress; releasing the key resets it",
+      "pass": true,
+      "detail": {
+        "beaconEarly": false,
+        "lockedPrompt": true,
+        "gateZ": -51.209999999999994,
+        "gate": 0,
+        "mid": 0.33333333333333315,
+        "afterRelease": 0,
+        "notDone": true,
+        "afterLeave": 0,
+        "throughWall": false,
+        "done": true,
+        "promptAfter": null,
+        "screen": "done0.00"
+      }
+    },
+    {
+      "group": "interaction",
+      "name": "walking out of range resets progress",
+      "pass": true,
+      "detail": {
+        "beaconEarly": false,
+        "lockedPrompt": true,
+        "gateZ": -51.209999999999994,
+        "gate": 0,
+        "mid": 0.33333333333333315,
+        "afterRelease": 0,
+        "notDone": true,
+        "afterLeave": 0,
+        "throughWall": false,
+        "done": true,
+        "promptAfter": null,
+        "screen": "done0.00"
+      }
+    },
+    {
+      "group": "interaction",
+      "name": "no interaction through the alcove wall",
+      "pass": true,
+      "detail": {
+        "beaconEarly": false,
+        "lockedPrompt": true,
+        "gateZ": -51.209999999999994,
+        "gate": 0,
+        "mid": 0.33333333333333315,
+        "afterRelease": 0,
+        "notDone": true,
+        "afterLeave": 0,
+        "throughWall": false,
+        "done": true,
+        "promptAfter": null,
+        "screen": "done0.00"
+      }
+    },
+    {
+      "group": "interaction",
+      "name": "completed console offers no second interaction",
+      "pass": true,
+      "detail": {
+        "beaconEarly": false,
+        "lockedPrompt": true,
+        "gateZ": -51.209999999999994,
+        "gate": 0,
+        "mid": 0.33333333333333315,
+        "afterRelease": 0,
+        "notDone": true,
+        "afterLeave": 0,
+        "throughWall": false,
+        "done": true,
+        "promptAfter": null,
+        "screen": "done0.00"
+      }
+    },
+    {
+      "group": "mission",
+      "name": "supply cache refills ammunition, repairs the suit, adds kits, once",
+      "pass": true,
+      "detail": {
+        "supply": true,
+        "reserve": 150,
+        "health": 100,
+        "kits": 3,
+        "supplyAgain": null,
+        "harv": true,
+        "gate": 1,
+        "power": 0.01,
+        "checkpoint": true,
+        "wave": true,
+        "headline": "穿過北門，啟動接應信標",
+        "throughGate": -74.84619531398667
+      }
+    },
+    {
+      "group": "mission",
+      "name": "harvester shutdown: machine spins down and the north gate opens",
+      "pass": true,
+      "detail": {
+        "supply": true,
+        "reserve": 150,
+        "health": 100,
+        "kits": 3,
+        "supplyAgain": null,
+        "harv": true,
+        "gate": 1,
+        "power": 0.01,
+        "checkpoint": true,
+        "wave": true,
+        "headline": "穿過北門，啟動接應信標",
+        "throughGate": -74.84619531398667
+      }
+    },
+    {
+      "group": "mission",
+      "name": "both objectives -> checkpoint stored, objective wave armed once",
+      "pass": true,
+      "detail": {
+        "supply": true,
+        "reserve": 150,
+        "health": 100,
+        "kits": 3,
+        "supplyAgain": null,
+        "harv": true,
+        "gate": 1,
+        "power": 0.01,
+        "checkpoint": true,
+        "wave": true,
+        "headline": "穿過北門，啟動接應信標",
+        "throughGate": -74.84619531398667
+      }
+    },
+    {
+      "group": "mission",
+      "name": "open gate can be walked through",
+      "pass": true,
+      "detail": {
+        "supply": true,
+        "reserve": 150,
+        "health": 100,
+        "kits": 3,
+        "supplyAgain": null,
+        "harv": true,
+        "gate": 1,
+        "power": 0.01,
+        "checkpoint": true,
+        "wave": true,
+        "headline": "穿過北門，啟動接應信標",
+        "throughGate": -74.84619531398667
+      }
+    },
+    {
+      "group": "extraction",
+      "name": "beacon starts the countdown, raises worm sign and brings pursuit",
+      "pass": true,
+      "detail": {
+        "beacon": true,
+        "phase": "inbound",
+        "remaining": 64.4,
+        "worm": 2,
+        "waveA": true,
+        "boardEarly": false,
+        "boardRefusal": true,
+        "livingBefore": 14,
+        "frozen": true,
+        "mapWhilePaused": false,
+        "resumed": true,
+        "livingAfterResume": 14,
+        "dead": "dead",
+        "after": {
+          "state": "playing",
+          "flags": {
+            "relay": false,
+            "terminal": true,
+            "harvester": true,
+            "supply": true,
+            "beacon": false,
+            "board": false
+          },
+          "gate": 1,
+          "power": 0,
+          "phase": "idle",
+          "thopter": "away",
+          "worm": 0,
+          "health": 100,
+          "z": -25,
+          "living": 14,
+          "deaths": 1,
+          "queue": 4,
+          "objectiveWave": true
+        },
+        "afterWave": true,
+        "livingLater": 14
+      }
+    },
+    {
+      "group": "extraction",
+      "name": "cannot board before the ornithopter has landed",
+      "pass": true,
+      "detail": {
+        "beacon": true,
+        "phase": "inbound",
+        "remaining": 64.4,
+        "worm": 2,
+        "waveA": true,
+        "boardEarly": false,
+        "boardRefusal": true,
+        "livingBefore": 14,
+        "frozen": true,
+        "mapWhilePaused": false,
+        "resumed": true,
+        "livingAfterResume": 14,
+        "dead": "dead",
+        "after": {
+          "state": "playing",
+          "flags": {
+            "relay": false,
+            "terminal": true,
+            "harvester": true,
+            "supply": true,
+            "beacon": false,
+            "board": false
+          },
+          "gate": 1,
+          "power": 0,
+          "phase": "idle",
+          "thopter": "away",
+          "worm": 0,
+          "health": 100,
+          "z": -25,
+          "living": 14,
+          "deaths": 1,
+          "queue": 4,
+          "objectiveWave": true
+        },
+        "afterWave": true,
+        "livingLater": 14
+      }
+    },
+    {
+      "group": "pause",
+      "name": "pause freezes countdown, worm, aircraft, enemies and both clocks",
+      "pass": true,
+      "detail": {
+        "beacon": true,
+        "phase": "inbound",
+        "remaining": 64.4,
+        "worm": 2,
+        "waveA": true,
+        "boardEarly": false,
+        "boardRefusal": true,
+        "livingBefore": 14,
+        "frozen": true,
+        "mapWhilePaused": false,
+        "resumed": true,
+        "livingAfterResume": 14,
+        "dead": "dead",
+        "after": {
+          "state": "playing",
+          "flags": {
+            "relay": false,
+            "terminal": true,
+            "harvester": true,
+            "supply": true,
+            "beacon": false,
+            "board": false
+          },
+          "gate": 1,
+          "power": 0,
+          "phase": "idle",
+          "thopter": "away",
+          "worm": 0,
+          "health": 100,
+          "z": -25,
+          "living": 14,
+          "deaths": 1,
+          "queue": 4,
+          "objectiveWave": true
+        },
+        "afterWave": true,
+        "livingLater": 14
+      }
+    },
+    {
+      "group": "pause",
+      "name": "resume continues from the same instant without a burst of spawns",
+      "pass": true,
+      "detail": {
+        "beacon": true,
+        "phase": "inbound",
+        "remaining": 64.4,
+        "worm": 2,
+        "waveA": true,
+        "boardEarly": false,
+        "boardRefusal": true,
+        "livingBefore": 14,
+        "frozen": true,
+        "mapWhilePaused": false,
+        "resumed": true,
+        "livingAfterResume": 14,
+        "dead": "dead",
+        "after": {
+          "state": "playing",
+          "flags": {
+            "relay": false,
+            "terminal": true,
+            "harvester": true,
+            "supply": true,
+            "beacon": false,
+            "board": false
+          },
+          "gate": 1,
+          "power": 0,
+          "phase": "idle",
+          "thopter": "away",
+          "worm": 0,
+          "health": 100,
+          "z": -25,
+          "living": 14,
+          "deaths": 1,
+          "queue": 4,
+          "objectiveWave": true
+        },
+        "afterWave": true,
+        "livingLater": 14
+      }
+    },
+    {
+      "group": "checkpoint",
+      "name": "death -> retry restores objectives, gate and shutdown harvester",
+      "pass": true,
+      "detail": {
+        "beacon": true,
+        "phase": "inbound",
+        "remaining": 64.4,
+        "worm": 2,
+        "waveA": true,
+        "boardEarly": false,
+        "boardRefusal": true,
+        "livingBefore": 14,
+        "frozen": true,
+        "mapWhilePaused": false,
+        "resumed": true,
+        "livingAfterResume": 14,
+        "dead": "dead",
+        "after": {
+          "state": "playing",
+          "flags": {
+            "relay": false,
+            "terminal": true,
+            "harvester": true,
+            "supply": true,
+            "beacon": false,
+            "board": false
+          },
+          "gate": 1,
+          "power": 0,
+          "phase": "idle",
+          "thopter": "away",
+          "worm": 0,
+          "health": 100,
+          "z": -25,
+          "living": 14,
+          "deaths": 1,
+          "queue": 4,
+          "objectiveWave": true
+        },
+        "afterWave": true,
+        "livingLater": 14
+      }
+    },
+    {
+      "group": "checkpoint",
+      "name": "retry leaves no residual countdown, aircraft or worm sign",
+      "pass": true,
+      "detail": {
+        "state": "playing",
+        "flags": {
+          "relay": false,
+          "terminal": true,
+          "harvester": true,
+          "supply": true,
+          "beacon": false,
+          "board": false
+        },
+        "gate": 1,
+        "power": 0,
+        "phase": "idle",
+        "thopter": "away",
+        "worm": 0,
+        "health": 100,
+        "z": -25,
+        "living": 14,
+        "deaths": 1,
+        "queue": 4,
+        "objectiveWave": true
+      }
+    },
+    {
+      "group": "checkpoint",
+      "name": "retry restores the player near the outpost with health and counts the death",
+      "pass": true,
+      "detail": {
+        "state": "playing",
+        "flags": {
+          "relay": false,
+          "terminal": true,
+          "harvester": true,
+          "supply": true,
+          "beacon": false,
+          "board": false
+        },
+        "gate": 1,
+        "power": 0,
+        "phase": "idle",
+        "thopter": "away",
+        "worm": 0,
+        "health": 100,
+        "z": -25,
+        "living": 14,
+        "deaths": 1,
+        "queue": 4,
+        "objectiveWave": true
+      }
+    },
+    {
+      "group": "checkpoint",
+      "name": "objective wave re-arms exactly once after a retry",
+      "pass": true,
+      "detail": {
+        "beacon": true,
+        "phase": "inbound",
+        "remaining": 64.4,
+        "worm": 2,
+        "waveA": true,
+        "boardEarly": false,
+        "boardRefusal": true,
+        "livingBefore": 14,
+        "frozen": true,
+        "mapWhilePaused": false,
+        "resumed": true,
+        "livingAfterResume": 14,
+        "dead": "dead",
+        "after": {
+          "state": "playing",
+          "flags": {
+            "relay": false,
+            "terminal": true,
+            "harvester": true,
+            "supply": true,
+            "beacon": false,
+            "board": false
+          },
+          "gate": 1,
+          "power": 0,
+          "phase": "idle",
+          "thopter": "away",
+          "worm": 0,
+          "health": 100,
+          "z": -25,
+          "living": 14,
+          "deaths": 1,
+          "queue": 4,
+          "objectiveWave": true
+        },
+        "afterWave": true,
+        "livingLater": 14
+      }
+    },
+    {
+      "group": "extraction",
+      "name": "ornithopter arrives after the countdown and opens boarding",
+      "pass": true,
+      "detail": {
+        "landed": true,
+        "arrival": 73.4,
+        "living": 14,
+        "board": true,
+        "state": "outro",
+        "safe": true,
+        "breach": true,
+        "final": "complete",
+        "hidden": false
+      }
+    },
+    {
+      "group": "extraction",
+      "name": "boarding completes with hostiles alive; no damage during lift-off",
+      "pass": true,
+      "detail": {
+        "landed": true,
+        "arrival": 73.4,
+        "living": 14,
+        "board": true,
+        "state": "outro",
+        "safe": true,
+        "breach": true,
+        "final": "complete",
+        "hidden": false
+      }
+    },
+    {
+      "group": "extraction",
+      "name": "lift-off shows the breach and only then the debrief",
+      "pass": true,
+      "detail": {
+        "landed": true,
+        "arrival": 73.4,
+        "living": 14,
+        "board": true,
+        "state": "outro",
+        "safe": true,
+        "breach": true,
+        "final": "complete",
+        "hidden": false
+      }
+    },
+    {
+      "group": "restart",
+      "name": "full restart resets objectives, gate, harvester, garrison, worm and checkpoint",
+      "pass": true,
+      "detail": {
+        "state": "playing",
+        "flags": {
+          "relay": false,
+          "terminal": false,
+          "harvester": false,
+          "supply": false,
+          "beacon": false,
+          "board": false
+        },
+        "gate": 0,
+        "running": true,
+        "living": 10,
+        "phase": "idle",
+        "worm": 0,
+        "ammo": 24,
+        "checkpoint": false,
+        "z": 54,
+        "visible": true,
+        "thopter": "away"
+      }
+    },
+    {
+      "group": "stability",
+      "name": "no uncaught errors in the fixture session",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "group": "alarm",
+      "name": "gunfire inside the outpost with the relay intact raises the alarm after a delay",
+      "pass": true,
+      "detail": {
+        "pending": "pending",
+        "alarm": "active",
+        "active": true,
+        "alarmSpawned": 4,
+        "alarmSpawnedLater": 4,
+        "cut": true,
+        "alarmAfterCut": "cut",
+        "activeAfterCut": false,
+        "objective": 2,
+        "maxAlive": 40,
+        "living": 16,
+        "minDist": 43.65300042162545,
+        "hidden": 6,
+        "total": 6,
+        "fx": {
+          "dust": 122,
+          "sparks": 17,
+          "decals": 1
+        }
+      }
+    },
+    {
+      "group": "alarm",
+      "name": "the alarm wave arrives once only (4 soldiers), however long the fight lasts",
+      "pass": true,
+      "detail": {
+        "pending": "pending",
+        "alarm": "active",
+        "active": true,
+        "alarmSpawned": 4,
+        "alarmSpawnedLater": 4,
+        "cut": true,
+        "alarmAfterCut": "cut",
+        "activeAfterCut": false,
+        "objective": 2,
+        "maxAlive": 40,
+        "living": 16,
+        "minDist": 43.65300042162545,
+        "hidden": 6,
+        "total": 6,
+        "fx": {
+          "dust": 122,
+          "sparks": 17,
+          "decals": 1
+        }
+      }
+    },
+    {
+      "group": "alarm",
+      "name": "cutting the relay afterwards silences the siren",
+      "pass": true,
+      "detail": {
+        "pending": "pending",
+        "alarm": "active",
+        "active": true,
+        "alarmSpawned": 4,
+        "alarmSpawnedLater": 4,
+        "cut": true,
+        "alarmAfterCut": "cut",
+        "activeAfterCut": false,
+        "objective": 2,
+        "maxAlive": 40,
+        "living": 16,
+        "minDist": 43.65300042162545,
+        "hidden": 6,
+        "total": 6,
+        "fx": {
+          "dust": 122,
+          "sparks": 17,
+          "decals": 1
+        }
+      }
+    },
+    {
+      "group": "alarm",
+      "name": "relay cut -> the objective wave is the reduced one (2)",
+      "pass": true,
+      "detail": {
+        "pending": "pending",
+        "alarm": "active",
+        "active": true,
+        "alarmSpawned": 4,
+        "alarmSpawnedLater": 4,
+        "cut": true,
+        "alarmAfterCut": "cut",
+        "activeAfterCut": false,
+        "objective": 2,
+        "maxAlive": 40,
+        "living": 16,
+        "minDist": 43.65300042162545,
+        "hidden": 6,
+        "total": 6,
+        "fx": {
+          "dust": 122,
+          "sparks": 17,
+          "decals": 1
+        }
+      }
+    },
+    {
+      "group": "reinforcements",
+      "name": "nobody appears within 20 m of the player; most arrive out of sight",
+      "pass": true,
+      "detail": {
+        "pending": "pending",
+        "alarm": "active",
+        "active": true,
+        "alarmSpawned": 4,
+        "alarmSpawnedLater": 4,
+        "cut": true,
+        "alarmAfterCut": "cut",
+        "activeAfterCut": false,
+        "objective": 2,
+        "maxAlive": 40,
+        "living": 16,
+        "minDist": 43.65300042162545,
+        "hidden": 6,
+        "total": 6,
+        "fx": {
+          "dust": 122,
+          "sparks": 17,
+          "decals": 1
+        }
+      }
+    },
+    {
+      "group": "effects",
+      "name": "effect pools stay within their budgets",
+      "pass": true,
+      "detail": {
+        "dust": 122,
+        "sparks": 17,
+        "decals": 1
+      }
+    },
+    {
+      "group": "mission",
+      "name": "mission completes with zero kills and zero shots fired [fixture]",
+      "pass": true,
+      "detail": {
+        "living": 14,
+        "kills": 0,
+        "state": "complete",
+        "shots": 0
+      }
+    },
+    {
+      "group": "runtime",
+      "name": "normal launch shows the title and exposes no test hooks",
+      "pass": true,
+      "detail": {
+        "hooks": "undefined",
+        "title": true
+      }
+    },
+    {
+      "group": "runtime",
+      "name": "start button leads through the intro into play with the HUD up",
+      "pass": true,
+      "detail": {
+        "hud": true,
+        "ammo": "24",
+        "objective": "穿越岩隙，選擇進入前哨的路線"
+      }
+    },
+    {
+      "group": "runtime",
+      "name": "left mouse button fires and consumes ammunition",
+      "pass": true,
+      "detail": "23"
+    },
+    {
+      "group": "runtime",
+      "name": "M opens the tactical map and pauses play",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "group": "runtime",
+      "name": "M again closes the map and resumes",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "group": "runtime",
+      "name": "Esc pauses",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "group": "runtime",
+      "name": "resume button returns to play",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "group": "runtime",
+      "name": "no page errors and no network requests in a normal session",
+      "pass": true,
+      "detail": {
+        "errors": [],
+        "requests": []
+      }
+    },
+    {
+      "group": "runtime",
+      "name": "starts and renders with the network disabled",
+      "pass": true,
+      "detail": {
+        "state": "playing",
+        "calls": 104,
+        "tris": 602020,
+        "requests": []
+      }
+    },
+    {
+      "group": "runtime",
+      "name": "frame statistics (low preset, world pass)",
+      "pass": true,
+      "detail": {
+        "state": "playing",
+        "calls": 104,
+        "tris": 602020
+      }
+    }
+  ]
+}

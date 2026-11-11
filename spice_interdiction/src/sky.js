@@ -78,7 +78,7 @@
       this.dome=new T.Mesh(new T.SphereGeometry(10,40,20),mat);this.dome.frustumCulled=false;this.dome.renderOrder=-10;scene.add(this.dome);
       scene.fog=new T.FogExp2(new T.Color().setRGB(...S.ATMOS.fog),S.ATMOS.density);
       const light=this.sun=new T.DirectionalLight(new T.Color().setRGB(1,.86,.67),7.2);light.castShadow=true;light.shadow.mapSize.set(4096,4096);
-      light.shadow.bias=-.00018;light.shadow.normalBias=.045;this.half=62;Object.assign(light.shadow.camera,{left:-this.half,right:this.half,top:this.half,bottom:-this.half,near:1,far:460});light.shadow.camera.updateProjectionMatrix();
+      light.shadow.bias=-.00042;light.shadow.normalBias=.085;this.half=62;Object.assign(light.shadow.camera,{left:-this.half,right:this.half,top:this.half,bottom:-this.half,near:1,far:460});light.shadow.camera.updateProjectionMatrix();
       scene.add(light,light.target);
       // Faint cool fill so surfaces facing away from both sun and sky keep their form.
       this.fill=new T.DirectionalLight(new T.Color().setRGB(.6,.72,1),.62);this.fill.position.set(-sun.x,.6,-sun.z);scene.add(this.fill);

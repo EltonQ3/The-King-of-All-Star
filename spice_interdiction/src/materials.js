@@ -135,7 +135,7 @@
       float kMetal=clamp(isMetal+chip*.55,0.,1.)*(1.-dust*.75);
       diffuseColor.rgb=col;`;
     return inject(mat,'kit'+(opts.key||''),colorCode,`roughnessFactor=kRough;`,`metalnessFactor=kMetal;`,
-      `((nC.g*.0022+scratch*.0015)*(1.-isCloth)+isCloth*weave*.0012+dust*nC.g*.004)/uScale`,
+      `((nC.g*.0022+scratch*.0015)*(1.-isCloth)+isCloth*weave*.0012+dust*nC.g*.004)/(uScale*uScale)`,
       `totalEmissiveRadiance+=vColor.rgb*vSurf.y*${(opts.glow??9).toFixed(1)};`);
   };
 
@@ -162,8 +162,8 @@
         float near=1.-smoothstep(10.,48.,viewDist);
         float rip=ripple(sp,13.5); sand*=1.-(1.-rip)*.085*near*soft;
         // Rock shelf: paler, pitted, cut by cracks, with sand caught in the low places.
-        float crack=smoothstep(.8,.97,texture2D(uNoise,sp*.19).b)*smoothstep(.35,.6,meso);
-        vec3 pan=s2l(vec3(.69,.585,.46))*(.86+meso*.2+mic.g*.1); pan*=1.-crack*.4;
+        float crack=smoothstep(.55,.95,texture2D(uNoise,sp*.085).b)*smoothstep(.35,.6,meso);
+        vec3 pan=s2l(vec3(.69,.585,.46))*(.86+meso*.2+mic.g*.1); pan*=1.-crack*.3;
         float drifted=smoothstep(.5,.72,texture2D(uNoise,sp*.031+.6).r*.7+texture2D(uNoise,sp*.13).r*.3);
         hard*=1.-drifted*.75; soft=1.-hard;
         vec3 col=mix(sand,pan,hard);

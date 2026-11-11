@@ -22,20 +22,22 @@
       this.aoCompute=pass({tDepth:{value:this.world.depthTexture},uPixel:{value:new T.Vector2()},uInverseProjection:{value:new T.Matrix4()}},`
         uniform sampler2D tDepth;uniform vec2 uPixel;uniform mat4 uInverseProjection;
         vec3 positionAt(vec2 uv,float d){vec4 p=uInverseProjection*vec4(uv*2.-1.,d*2.-1.,1.);return p.xyz/p.w;}
+        // Every lookup is snapped to a depth texel centre: reconstructing a position at a
+        // UV that does not match the sampled texel bands badly on grazing surfaces.
+        vec2 texel(vec2 uv){return (floor(uv/uPixel)+.5)*uPixel;}
         void main(){
-          float depth=texture2D(tDepth,vUv).r,ao=1.;
+          vec2 c=texel(vUv);float depth=texture2D(tDepth,c).r,ao=1.;
           if(depth<.99996){
-            vec3 p=positionAt(vUv,depth);
-            // Normal from the nearer of each neighbour pair, so silhouettes do not bend it.
+            vec3 p=positionAt(c,depth);
             vec2 ex=vec2(uPixel.x,0.),ey=vec2(0.,uPixel.y);
-            vec3 pr=positionAt(vUv+ex,texture2D(tDepth,vUv+ex).r),pl=positionAt(vUv-ex,texture2D(tDepth,vUv-ex).r),pu=positionAt(vUv+ey,texture2D(tDepth,vUv+ey).r),pd=positionAt(vUv-ey,texture2D(tDepth,vUv-ey).r);
+            vec3 pr=positionAt(c+ex,texture2D(tDepth,c+ex).r),pl=positionAt(c-ex,texture2D(tDepth,c-ex).r),pu=positionAt(c+ey,texture2D(tDepth,c+ey).r),pd=positionAt(c-ey,texture2D(tDepth,c-ey).r);
             vec3 dx=abs(pr.z-p.z)<abs(p.z-pl.z)?pr-p:p-pl,dy=abs(pu.z-p.z)<abs(p.z-pd.z)?pu-p:p-pd;
             vec3 normal=normalize(cross(dx,dy));if(normal.z<0.)normal=-normal;
             float radius=1.25,px=clamp(520./max(-p.z,1.),3.,48.),occ=0.;
             float turn=fract(sin(dot(floor(vUv/uPixel),vec2(12.9898,78.233)))*43758.5453)*6.283;
             for(int i=0;i<14;i++){
               float fi=float(i),angle=fi*2.399963+turn;
-              vec2 uv=clamp(vUv+vec2(cos(angle),sin(angle))*px*(.18+.82*sqrt((fi+.5)/14.))*uPixel,vec2(.001),vec2(.999));
+              vec2 uv=texel(clamp(c+vec2(cos(angle),sin(angle))*px*(.18+.82*sqrt((fi+.5)/14.))*uPixel,vec2(.002),vec2(.998)));
               vec3 delta=positionAt(uv,texture2D(tDepth,uv).r)-p;float len=length(delta);
               occ+=max(dot(normal,delta/max(len,.001))-.22,0.)*(1.-smoothstep(.1,radius,len))*step(.03,len);
             }

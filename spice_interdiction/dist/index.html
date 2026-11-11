@@ -4351,7 +4351,7 @@ window.Spice={VERSION:'0.3.0'};
       float kMetal=clamp(isMetal+chip*.55,0.,1.)*(1.-dust*.75);
       diffuseColor.rgb=col;`;
     return inject(mat,'kit'+(opts.key||''),colorCode,`roughnessFactor=kRough;`,`metalnessFactor=kMetal;`,
-      `((nC.g*.0022+scratch*.0015)*(1.-isCloth)+isCloth*weave*.0012+dust*nC.g*.004)/uScale`,
+      `((nC.g*.0022+scratch*.0015)*(1.-isCloth)+isCloth*weave*.0012+dust*nC.g*.004)/(uScale*uScale)`,
       `totalEmissiveRadiance+=vColor.rgb*vSurf.y*${(opts.glow??9).toFixed(1)};`);
   };
 
@@ -4378,8 +4378,8 @@ window.Spice={VERSION:'0.3.0'};
         float near=1.-smoothstep(10.,48.,viewDist);
         float rip=ripple(sp,13.5); sand*=1.-(1.-rip)*.085*near*soft;
         // Rock shelf: paler, pitted, cut by cracks, with sand caught in the low places.
-        float crack=smoothstep(.8,.97,texture2D(uNoise,sp*.19).b)*smoothstep(.35,.6,meso);
-        vec3 pan=s2l(vec3(.69,.585,.46))*(.86+meso*.2+mic.g*.1); pan*=1.-crack*.4;
+        float crack=smoothstep(.55,.95,texture2D(uNoise,sp*.085).b)*smoothstep(.35,.6,meso);
+        vec3 pan=s2l(vec3(.69,.585,.46))*(.86+meso*.2+mic.g*.1); pan*=1.-crack*.3;
         float drifted=smoothstep(.5,.72,texture2D(uNoise,sp*.031+.6).r*.7+texture2D(uNoise,sp*.13).r*.3);
         hard*=1.-drifted*.75; soft=1.-hard;
         vec3 col=mix(sand,pan,hard);
@@ -4563,7 +4563,7 @@ window.Spice={VERSION:'0.3.0'};
       this.dome=new T.Mesh(new T.SphereGeometry(10,40,20),mat);this.dome.frustumCulled=false;this.dome.renderOrder=-10;scene.add(this.dome);
       scene.fog=new T.FogExp2(new T.Color().setRGB(...S.ATMOS.fog),S.ATMOS.density);
       const light=this.sun=new T.DirectionalLight(new T.Color().setRGB(1,.86,.67),7.2);light.castShadow=true;light.shadow.mapSize.set(4096,4096);
-      light.shadow.bias=-.00018;light.shadow.normalBias=.045;this.half=62;Object.assign(light.shadow.camera,{left:-this.half,right:this.half,top:this.half,bottom:-this.half,near:1,far:460});light.shadow.camera.updateProjectionMatrix();
+      light.shadow.bias=-.00042;light.shadow.normalBias=.085;this.half=62;Object.assign(light.shadow.camera,{left:-this.half,right:this.half,top:this.half,bottom:-this.half,near:1,far:460});light.shadow.camera.updateProjectionMatrix();
       scene.add(light,light.target);
       // Faint cool fill so surfaces facing away from both sun and sky keep their form.
       this.fill=new T.DirectionalLight(new T.Color().setRGB(.6,.72,1),.62);this.fill.position.set(-sun.x,.6,-sun.z);scene.add(this.fill);
@@ -4741,20 +4741,22 @@ window.Spice={VERSION:'0.3.0'};
       this.aoCompute=pass({tDepth:{value:this.world.depthTexture},uPixel:{value:new T.Vector2()},uInverseProjection:{value:new T.Matrix4()}},`
         uniform sampler2D tDepth;uniform vec2 uPixel;uniform mat4 uInverseProjection;
         vec3 positionAt(vec2 uv,float d){vec4 p=uInverseProjection*vec4(uv*2.-1.,d*2.-1.,1.);return p.xyz/p.w;}
+        // Every lookup is snapped to a depth texel centre: reconstructing a position at a
+        // UV that does not match the sampled texel bands badly on grazing surfaces.
+        vec2 texel(vec2 uv){return (floor(uv/uPixel)+.5)*uPixel;}
         void main(){
-          float depth=texture2D(tDepth,vUv).r,ao=1.;
+          vec2 c=texel(vUv);float depth=texture2D(tDepth,c).r,ao=1.;
           if(depth<.99996){
-            vec3 p=positionAt(vUv,depth);
-            // Normal from the nearer of each neighbour pair, so silhouettes do not bend it.
+            vec3 p=positionAt(c,depth);
             vec2 ex=vec2(uPixel.x,0.),ey=vec2(0.,uPixel.y);
-            vec3 pr=positionAt(vUv+ex,texture2D(tDepth,vUv+ex).r),pl=positionAt(vUv-ex,texture2D(tDepth,vUv-ex).r),pu=positionAt(vUv+ey,texture2D(tDepth,vUv+ey).r),pd=positionAt(vUv-ey,texture2D(tDepth,vUv-ey).r);
+            vec3 pr=positionAt(c+ex,texture2D(tDepth,c+ex).r),pl=positionAt(c-ex,texture2D(tDepth,c-ex).r),pu=positionAt(c+ey,texture2D(tDepth,c+ey).r),pd=positionAt(c-ey,texture2D(tDepth,c-ey).r);
             vec3 dx=abs(pr.z-p.z)<abs(p.z-pl.z)?pr-p:p-pl,dy=abs(pu.z-p.z)<abs(p.z-pd.z)?pu-p:p-pd;
             vec3 normal=normalize(cross(dx,dy));if(normal.z<0.)normal=-normal;
             float radius=1.25,px=clamp(520./max(-p.z,1.),3.,48.),occ=0.;
             float turn=fract(sin(dot(floor(vUv/uPixel),vec2(12.9898,78.233)))*43758.5453)*6.283;
             for(int i=0;i<14;i++){
               float fi=float(i),angle=fi*2.399963+turn;
-              vec2 uv=clamp(vUv+vec2(cos(angle),sin(angle))*px*(.18+.82*sqrt((fi+.5)/14.))*uPixel,vec2(.001),vec2(.999));
+              vec2 uv=texel(clamp(c+vec2(cos(angle),sin(angle))*px*(.18+.82*sqrt((fi+.5)/14.))*uPixel,vec2(.002),vec2(.998)));
               vec3 delta=positionAt(uv,texture2D(tDepth,uv).r)-p;float len=length(delta);
               occ+=max(dot(normal,delta/max(len,.001))-.22,0.)*(1.-smoothstep(.1,radius,len))*step(.03,len);
             }
