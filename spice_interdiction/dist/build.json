@@ -1,0 +1,29 @@
+{
+  "artifact": "Spice_Interdiction_v0.3.html",
+  "bytes": 982824,
+  "sha256": "da06ba2ae199a48165bc12a204341a7c67bf574cd493018b52a2c4e26819a5cd",
+  "sources": [
+    "core.js",
+    "materials.js",
+    "sky.js",
+    "terrain.js",
+    "render.js",
+    "kit.js",
+    "world.js",
+    "harvester.js",
+    "thopter.js",
+    "worm.js",
+    "weapon.js",
+    "enemies.js",
+    "effects.js",
+    "audio.js",
+    "input.js",
+    "hud.js",
+    "mission.js",
+    "extraction.js",
+    "game.js",
+    "main.js"
+  ],
+  "runtime": "Three.js r180",
+  "external_asset_dependencies": []
+}

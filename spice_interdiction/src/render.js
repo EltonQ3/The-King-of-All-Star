@@ -150,8 +150,8 @@
       // The view model borrows the world sky so metal reflects the same light the level does.
       const env=this.game.sky.env.texture;this.game.viewScene.environment=env;this.game.viewScene.environmentIntensity=1.05;
     }
-    resize(w,h,high=true){
-      this.width=w;this.height=h;const samples=high?4:0;
+    resize(w,h,high=true,samples=high?4:0){
+      this.width=w;this.height=h;
       for(const rt of [this.world,this.work]){if(rt.samples!==samples){rt.samples=samples;rt.dispose();}rt.setSize(w,h);}
       this.ao.setSize(Math.max(1,w>>1),Math.max(1,h>>1));
       for(let i=0;i<LEVELS;i++){const s=2<<i,x=Math.max(2,Math.round(w/s)),y=Math.max(2,Math.round(h/s));this.down[i].setSize(x,y);this.up[i].setSize(x,y);}

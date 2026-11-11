@@ -9,35 +9,56 @@
 </head>
 <body>
 <canvas id="view" aria-label="第一人稱射擊遊戲畫面"></canvas>
-<div class="vignette" aria-hidden="true"></div><div id="damage" aria-hidden="true"></div>
-<section id="boot"><div class="boot-word">香料斷流</div><p>正在建立沙海、岩層與採收設施</p><div class="boot-line"></div><small>LOCAL GENERATION / NO ASSET DOWNLOADS</small></section>
+<section id="boot"><div class="boot-word">香料斷流</div><p id="boot-msg">正在建立沙海、岩層與採收設施</p><div class="boot-line"></div><small>LOCAL GENERATION / NO ASSET DOWNLOADS</small></section>
+
 <section id="title" hidden>
-  <div class="title-scrim"></div><div class="top-line"><span class="sigil">△</span><span>SPICE INTERDICTION</span><span class="build">OFFLINE BUILD / 0.2</span></div>
+  <div class="title-scrim"></div>
+  <div class="top-line"><span class="sigil">△</span><span>SPICE INTERDICTION</span><span class="build">OFFLINE BUILD / 0.3</span></div>
   <main class="title-content">
-    <div class="eyebrow">ARRAKIS · SECTOR 09</div><h1>香料<span>斷流</span></h1>
-    <div class="title-rule"></div><p class="lead">沙海不會記住你的腳印。<br>但前哨會記住最後一聲槍響。</p>
-    <p class="brief">穿越岩隙，清除採收前哨守衛。<br>在北側石門與接應隊會合。</p>
-    <div class="title-actions"><button id="start" class="primary"><span>進入岩隙</span><b>→</b></button><button id="controls-button" class="text-button">操作說明 ＋</button></div>
-    <label class="quality-label">畫質 <select id="quality"><option value="high">高 · HDR / 接觸陰影</option><option value="ultra">極高 · 精細陰影</option><option value="low">低 · 優先效能</option></select></label>
+    <div class="eyebrow">ARRAKIS · 第九採收區</div><h1>香料<span>斷流</span></h1>
+    <div class="title-rule"></div>
+    <p class="lead">誰能摧毀一樣東西，誰就控制了它。</p>
+    <p class="brief">潛入哈肯尼採收前哨：奪走勘測紀錄，讓採收機停在沙蟲的路上，<br>然後在追兵趕到之前登上撲翼機。</p>
+    <div class="title-actions"><button id="start" class="primary"><span>進入岩隙</span><b>→</b></button><button id="controls-button" class="ghost">操作說明</button><button id="settings-button" class="ghost">設定</button></div>
+    <label class="quality-label">畫質 <select id="quality"><option value="high">高</option><option value="ultra">極高</option><option value="medium">中</option><option value="low">低</option></select></label>
   </main>
-  <div class="side-caption"><span>09 / HARVEST OUTPOST</span><i></i><span>THE DESERT TAKES EVERYTHING.</span></div>
-  <footer><span>《沙丘》靈感原創關卡 · 非官方技術試作</span><span>THREE.JS / WEBGL 2 / PROCEDURAL</span></footer>
+  <div class="side-caption"><span>09 / HARVEST OUTPOST</span><i></i><span>DESERT POWER</span></div>
+  <footer><span>《沙丘》世界觀的非官方同人試作 · 全部內容由程式即時生成</span><span>THREE.JS / WEBGL 2</span></footer>
 </section>
+
+<section id="card" hidden><div><small id="card-small">阿拉基斯 · 北半球深沙漠</small><strong id="card-title">第九採收區 · 岩隙</strong><span id="card-sub">弗瑞曼突襲隊 · 單人滲透</span></div></section>
+
 <section id="hud" hidden>
-  <div class="objective"><small>行動目標 <em id="kills">0 / 6</em></small><strong id="objective">穿越岩隙，接近採收前哨</strong><span>09 · 香料採收區</span></div>
-  <div class="compass"><div class="compass-window"><div id="compass-tape"></div><i class="compass-needle"></i></div><b id="heading">000°</b></div>
+  <div class="objective"><small>行動目標</small><strong id="objective">穿越岩隙</strong><ul id="obj-list"></ul></div>
+  <div class="compass"><div class="compass-window"><div id="compass-tape"></div><div id="compass-marks"></div><i class="compass-needle"></i></div><b id="heading">000°</b></div>
+  <div id="timer" hidden><small>撲翼機抵達</small><b id="timer-value">01:15</b><div class="timer-track"><i id="timer-fill"></i></div></div>
   <button id="pause-button" class="pause-icon" aria-label="暫停">Ⅱ</button>
-  <div id="crosshair"><i></i><i></i><i></i><i></i><b></b></div><div id="hitmark">×</div><div id="hit-label"></div><div id="damage-direction"><i></i></div>
-  <div id="marker"><div class="diamond"></div><small id="marker-label">採收前哨</small><b id="distance">60 m</b></div>
-  <div class="health-panel"><small>蒸餾服 / 生命</small><div><b id="health">100</b><span>完整性</span></div><div class="health-track"><i id="health-fill"></i></div></div>
-  <div class="ammo-panel"><small id="reload-label"></small><div><b id="ammo">18</b><span> / <i id="reserve">126</i></span></div><div class="reload-track"><i id="reload-progress"></i></div><p>K–18 / 沙行者</p></div>
-  <div id="seismic" hidden><div><small>SEISMIC / 地底震源</small><b id="seismic-level">00</b></div><canvas id="seismic-graph" width="180" height="36"></canvas><span id="seismic-label">地底訊號</span><i>東北沙海 ↗</i></div><p id="message" role="status"></p><div class="key-hint">WASD 移動 <span>·</span> 右鍵瞄準 <span>·</span> R 換彈 <span>·</span> ESC 暫停</div>
+  <div id="crosshair"><i></i><i></i><i></i><i></i><b></b></div><div id="hitmark"><i></i><i></i><i></i><i></i></div><div id="hit-label"></div>
+  <div id="damage-direction"><i></i></div><div id="markers"></div>
+  <div id="prompt" hidden><div class="prompt-key" id="prompt-key">E</div><div class="prompt-body"><span id="prompt-label"></span><div class="prompt-track"><i id="prompt-fill"></i></div></div></div>
+  <div id="toast"></div>
+  <div id="radio" hidden><b id="radio-speaker"></b><p id="radio-text"></p></div>
+  <div class="health-panel"><small>蒸餾服完整性</small><div class="health-row"><b id="health">100</b><div class="health-track"><i id="health-fill"></i></div></div><div class="kits"><span id="kits"></span><em>Q 急救包</em></div></div>
+  <div class="ammo-panel"><small id="reload-label"></small><div class="ammo-row"><b id="ammo">24</b><span>/ <i id="reserve">120</i></span></div><div class="reload-track"><i id="reload-progress"></i></div><p>K–18 · 毛拉卡賓槍</p></div>
+  <div id="seismic" hidden><div><small>地震儀</small><b id="seismic-level">00</b></div><canvas id="seismic-graph" width="180" height="36"></canvas><span id="seismic-label">地底訊號</span></div>
+  <div class="key-hint" id="key-hint">WASD 移動 <span>·</span> E 互動 <span>·</span> M 戰術地圖 <span>·</span> C 蹲伏 <span>·</span> ESC 暫停</div>
 </section>
-<section id="pause" class="modal" hidden><div class="card"><small>FIELD OPERATIONS / HOLD</small><h2>暫停行動</h2><p>離開這個視窗不會繼續戰鬥。</p><button id="resume" class="primary">繼續行動 →</button><button id="restart">重新開始</button><div class="settings"><label>畫質<select id="quality-pause"><option value="high">高</option><option value="ultra">極高</option><option value="low">低</option></select></label><label>減少鏡頭晃動<input id="motion" type="checkbox"></label><label>視野<input id="fov" type="range" min="60" max="95" step="1" value="73"></label><label>音量<input id="volume" type="range" min="0" max="1" step=".05" value=".6"></label><label>視角靈敏度<input id="sensitivity" type="range" min=".3" max="2" step=".1" value="1"></label></div></div></section>
-<section id="dead" class="modal" hidden><div class="card"><small>VITAL SIGNAL / LOST</small><h2>訊號中斷</h2><p>守衛瞄準前，面罩會亮起。<br>利用低牆與岩石阻擋射線；脫離火力後生命會恢復。</p><button id="retry" class="primary">重新進入岩隙 →</button></div></section>
-<section id="complete" class="modal" hidden><div class="card debrief"><small>EXTRACTION / CONFIRMED</small><h2>離開沙海</h2><p>六名守衛已清除。你已抵達接應點。</p><dl><div><dt>行動用時</dt><dd id="final-time">0:00</dd></div><div><dt>射擊命中率</dt><dd id="final-accuracy">0%</dd></div><div><dt>發射次數</dt><dd id="final-shots">0</dd></div></dl><button id="again" class="primary">再次行動 →</button><p class="footnote">第二階段切片 · 地底預警已加入；不包含沙蟲頭目戰。</p></div></section>
-<section id="help" class="modal" hidden><div class="card"><small>FIELD MANUAL / 01</small><h2>行動指南</h2><dl><div><dt>移動 / 視角</dt><dd>WASD / 滑鼠</dd></div><div><dt>射擊 / 瞄準</dt><dd>左鍵 / 按住右鍵</dd></div><div><dt>換彈 / 跳躍</dt><dd>R / Space</dd></div><div><dt>衝刺 / 蹲下</dt><dd>Shift / C</dd></div><div><dt>暫停</dt><dd>Esc</dd></div></dl><p>滑鼠鎖定不受支援時，可按住左鍵拖曳轉向，亦可使用方向鍵轉向。觸控裝置以左下搖桿移動，在畫面右側拖曳轉向。</p><p>先擊退三名守衛，再清除三名增援。全部清除後，前往北側接應光柱即可完成。交戰後可觸發沙蟲預警：震源從東側沙海掠過，這個版本不會造成額外傷害。</p><button id="help-close" class="primary">返回 →</button></div></section>
-<div id="touch" hidden><div id="move-pad"><span id="move-nub"></span></div><div class="touch-actions"><button data-action="ads">瞄準</button><button data-action="reload">換彈</button><button data-action="jump">跳躍</button><button data-action="fire" class="fire">開火</button></div></div>
+
+<section id="map" hidden><div class="map-card"><header><small>TACTICAL / 戰術地圖</small><h2>第九採收前哨</h2><p>任務不要求殲滅全部敵人。兩條路線在筒倉之間有兩處橫向通道，可以中途互換。</p></header><canvas id="map-canvas" width="620" height="860"></canvas>
+  <aside><ul id="map-legend"></ul><p class="map-note"><b>西側維修道</b>　守衛較少；切斷警報後，前哨無法呼叫增援，撤離時追兵減少。<br><b>東側採收場</b>　正面遭遇較多；補給站可補滿彈藥、修補蒸餾服並取得急救包。</p><button id="map-close" class="primary">返回行動 →</button></aside></div></section>
+
+<section id="pause" class="modal" hidden><div class="card"><small>FIELD OPERATIONS / HOLD</small><h2>暫停行動</h2><p>戰鬥、倒數與沙蟲訊號都已凍結。</p><button id="resume" class="primary">繼續行動 →</button><button id="pause-checkpoint">從檢查點重試</button><button id="restart">整關重新開始</button>
+  <div class="settings"><label>畫質<select id="quality-pause"><option value="high">高</option><option value="ultra">極高</option><option value="medium">中</option><option value="low">低</option></select></label><label>難度<select id="difficulty"><option value="0.75">從容</option><option value="1" selected>標準</option><option value="1.3">嚴酷</option></select></label><label>視野<input id="fov" type="range" min="60" max="100" step="1" value="78"></label><label>音量<input id="volume" type="range" min="0" max="1" step=".05" value=".7"></label><label>視角靈敏度<input id="sensitivity" type="range" min=".3" max="2.5" step=".1" value="1"></label><label>反轉垂直視角<input id="invert" type="checkbox"></label><label>減少鏡頭晃動<input id="motion" type="checkbox"></label></div></div></section>
+<section id="dead" class="modal" hidden><div class="card"><small>VITAL SIGNAL / LOST</small><h2>訊號中斷</h2><p id="dead-tip">守衛開火前，面罩會亮起。利用掩體阻擋射線；脫離火力後蒸餾服會慢慢自行修補。</p><button id="retry-checkpoint" class="primary">從檢查點重試 →</button><button id="retry">整關重新開始</button></div></section>
+<section id="complete" class="modal" hidden><div class="card debrief"><small>EXTRACTION / CONFIRMED</small><h2>離開沙海</h2><p id="final-line">採收機留給了沙蟲。勘測紀錄已送回穴地。</p><div class="rating"><span>行動評級</span><b id="final-rating">—</b></div>
+  <dl><div><dt>行動用時</dt><dd id="final-time">0:00</dd></div><div><dt>命中率</dt><dd id="final-accuracy">0%</dd></div><div><dt>擊倒 / 被發現</dt><dd id="final-kills">0</dd></div><div><dt>接近路線</dt><dd id="final-route">—</dd></div><div><dt>警報線路</dt><dd id="final-alarm">—</dd></div><div><dt>重試次數</dt><dd id="final-deaths">0</dd></div></dl>
+  <button id="again" class="primary">再次行動 →</button><p class="footnote">v0.3 · 完整單關：雙路線、任務互動、事件增援、接應撤離。</p></div></section>
+<section id="help" class="modal" hidden><div class="card wide"><small>FIELD MANUAL / 01</small><h2>行動指南</h2>
+  <dl><div><dt>移動 / 視角</dt><dd>WASD / 滑鼠</dd></div><div><dt>射擊 / 瞄準</dt><dd>左鍵 / 按住右鍵</dd></div><div><dt>互動</dt><dd>按住 E</dd></div><div><dt>換彈 / 急救包</dt><dd>R / Q</dd></div><div><dt>衝刺 / 蹲伏 / 跳躍</dt><dd>Shift / C / Space</dd></div><div><dt>戰術地圖 / 暫停</dt><dd>M / Esc</dd></div></dl>
+  <p>目標依序是：取得勘測紀錄與停止採收機（次序不限）→ 啟動接應信標 → 等撲翼機降落後登機。<b>不需要清光敵人。</b></p>
+  <p>蹲伏時較難被發現。被發現後，守衛會在幾秒內拉響警報並呼叫增援——除非你先切斷西側牆上的警報繼電器。沙蟲不會上岩地，但震波會隨撤離時間增強。</p>
+  <p>滑鼠鎖定不可用時，可按住左鍵拖曳或用方向鍵轉向。觸控裝置：左下搖桿移動，右側拖曳轉向。</p><button id="help-close" class="primary">返回 →</button></div></section>
+<div id="touch" hidden><div id="move-pad"><span id="move-nub"></span></div><div class="touch-actions"><button data-action="map">地圖</button><button data-action="use">互動</button><button data-action="ads">瞄準</button><button data-action="reload">換彈</button><button data-action="jump">跳躍</button><button data-action="fire" class="fire">開火</button></div></div>
 <noscript>此離線遊戲需要啟用 JavaScript。</noscript>
 <script>/*__CODE__*/</script>
 </body></html>
