@@ -1,109 +1,119 @@
 'use strict';
-/* SANDWALKER / K-18. Machined receiver, shrouded barrel, analogue optic,
- * physically separate magazine, bolt and support hand. All mesh data is local. */
+/* First-person K-18 maula carbine and stillsuit arms.
+ * Separate rigid groups (gun, magazine, bolt, support arm) are posed every frame
+ * by poseWeapon(): hip/ADS blend, inertia sway, stride bob, sprint carry, landing
+ * dip, spring recoil, a four-beat reload and a lowered carry while interacting. */
 (function(S,T){
+  const K=S.Kit,C=K.C,M=S.SURF;
+  const SIGHT_Y=.0935,SIGHT_Z=-.02;
   S.makeWeapon=function(){
+    const kit=S.viewKit=S.kitMaterial({dust:.3,key:'vm',env:1.25,glow:5,scale:7,wear:.62});
     const root=new T.Group(),gun=new T.Group();root.add(gun);
-    const metal=S.weatherMaterial(S.material('#3b4548',.4,.62),'metal',7);
-    const edge=S.weatherMaterial(S.material('#8b9188',.4,.8),'metal',7);
-    const brass=S.weatherMaterial(S.material('#a48656',.46,.73),'metal',6);
-    const ceramic=S.weatherMaterial(S.material('#565d55',.69,.22),'metal',7);
-    const black=S.material('#11191c',.77,.15),rubber=S.material('#272d2a',.94,.04);
-    const cloth=S.weatherMaterial(S.material('#696451',.96),'cloth',3),glove=S.weatherMaterial(S.material('#373d36',.86),'cloth',5);
-    const part=(g,w,h,d,r,mat,x,y,z)=>S.mesh(g,S.bevelBox(w,h,d,r),mat,x,y,z);
-    part(gun,.126,.144,.55,.015,metal,0,-.014,-.055);
-    part(gun,.12,.069,.39,.012,ceramic,0,.064,-.115);
-    part(gun,.10,.042,.22,.012,metal,0,.035,.28);
-    for(const side of [-1,1])S.beam(gun,metal,[side*.036,-.037,.17],[side*.036,-.037,.40],.012);
-    part(gun,.10,.095,.035,.012,rubber,0,-.005,.40);
-    // Recessed receiver panels and engraved service marks.
-    for(const side of [-1,1]){
-      part(gun,.012,.078,.23,.005,black,side*.068,-.006,-.026);
-      part(gun,.013,.018,.21,.004,brass,side*.075,.043,-.033);
-      for(const z of [-.22,-.1,.16]){const screw=S.cylinder(gun,edge,side*.074,-.042,z,.008,.008,10);screw.rotation.z=Math.PI/2;const slot=S.box(gun,black,side*.079,-.042,z,.003,.002,.009,false);}
-      S.box(gun,edge,side*.069,-.064,.02,.008,.007,.4);
-    }
-    const bolt=new T.Group();bolt.position.set(.083,.018,-.06);gun.add(bolt);
-    part(bolt,.018,.035,.1,.004,edge,0,0,0);S.cylinder(bolt,brass,.016,0,.045,.012,.035,8).rotation.z=Math.PI/2;
-    // Elliptical, perforated heat shroud, not a solid extruded block.
-    part(gun,.112,.104,.4,.013,ceramic,0,-.014,-.48);
-    for(let i=0;i<8;i++)for(const side of [-1,1]){
-      S.box(gun,black,side*.057,.008,-.32-i*.042,.004,.035,.025,false);
-      S.box(gun,edge,side*.058,-.029,-.32-i*.042,.005,.006,.026,false);
-    }
-    for(let i=0;i<5;i++)S.box(gun,rubber,0,-.073,-.34-i*.058,.116,.018,.034);
-    function tube(g,mat,x,y,z,r,len){const v=S.cylinder(g,mat,x,y,z,r,len,24);v.rotation.x=Math.PI/2;return v;}
-    tube(gun,metal,0,.014,-.79,.025,.29);
-    for(let i=0;i<5;i++)tube(gun,edge,0,.014,-.689-i*.026,.032,.008);
-    tube(gun,metal,0,.014,-.948,.037,.095);tube(gun,edge,0,.014,-.994,.037,.008);
-    const bore=S.mesh(gun,new T.RingGeometry(.019,.035,24),black,0,.014,-1.001);bore.rotation.y=Math.PI;
-    for(const side of [-1,1])for(let i=0;i<3;i++)S.box(gun,black,side*.037,.014,-.918-i*.023,.004,.02,.011,false);
-    S.box(gun,brass,0,.104,-.22,.042,.01,.48);
-    // Low, rectangular optic hood with visible screws and an amber etched reticle.
-    const optic=new T.Group();optic.position.set(0,.152,.035);gun.add(optic);
-    part(optic,.117,.012,.12,.003,metal,0,.045,0);part(optic,.117,.014,.13,.003,metal,0,-.044,0);
-    for(const x of [-.053,.053])part(optic,.013,.09,.12,.003,metal,x,0,0);
-    const glass=new T.MeshPhysicalMaterial({color:'#bac8bd',metalness:.25,roughness:.15,transparent:true,opacity:.13,depthWrite:false,side:T.DoubleSide});
-    S.mesh(optic,new T.PlaneGeometry(.088,.071),glass,0,0,.051,false);
-    const reticle=new T.Group();reticle.position.z=.054;optic.add(reticle);
-    const retmat=new T.MeshBasicMaterial({color:'#ffd49a',transparent:true,opacity:.8,toneMapped:false,depthWrite:false});
-    S.mesh(reticle,new T.RingGeometry(.007,.0078,32),retmat,0,0,0,false);S.mesh(reticle,new T.CircleGeometry(.0014,12),retmat,0,0,.001,false);
-    for(const x of [-1,1])S.box(reticle,retmat,x*.013,0,0,.007,.0008,.0001,false);
-    const dial=tube(optic,brass,.076,-.02,0,.02,.022);dial.rotation.set(0,0,Math.PI/2);
-    for(let i=0;i<10;i++){const a=i/10*Math.PI*2;S.box(optic,black,.088,-.02+Math.sin(a)*.021,Math.cos(a)*.021,.004,.003,.005);}
-    S.box(gun,metal,0,.117,-.68,.027,.055,.025);S.box(gun,brass,0,.15,-.68,.009,.018,.01);
-    // Magazine follows a non-linear drop/insert/reseat animation.
-    const mag=new T.Group();mag.position.set(0,-.155,.01);gun.add(mag);
-    part(mag,.085,.25,.137,.012,metal,0,-.075,0);part(mag,.095,.025,.15,.004,edge,0,-.21,0);
-    for(const side of [-1,1])for(let i=0;i<4;i++)S.box(mag,ceramic,side*.045,-.055-i*.035,0,.007,.014,.11);
-    part(gun,.083,.18,.105,.015,rubber,0,-.135,.19).rotation.x=-.24;
-    // An actual open trigger guard rather than a filled block.
-    S.beam(gun,metal,[0,-.085,.135],[0,-.2,.105],.008);S.beam(gun,metal,[0,-.2,.105],[0,-.2,.02],.008);S.beam(gun,metal,[0,-.2,.02],[0,-.083,.015],.008);
-    S.beam(gun,brass,[0,-.09,.096],[0,-.15,.078],.008);
-    // Finger articulation: knuckle segments, wrist seals, ribbed stillsuit sleeves.
-    const hand=new T.Group();hand.position.set(-.018,-.104,-.46);gun.add(hand);
-    const sleeve=S.beam(hand,cloth,[-.26,-.18,.77],[-.06,-.04,.14],.067);
-    S.mesh(hand,new T.SphereGeometry(.059,18,12),glove,-.047,-.008,.055).scale.set(.8,.72,1.25);
-    for(let i=0;i<4;i++){
-      const z=-.025+i*.031;S.beam(hand,glove,[-.045,.003,z],[.012,.027,z],.0115);S.beam(hand,glove,[.012,.027,z],[.055,.008,z],.01);
-      part(hand,.023,.015,.023,.004,ceramic,-.025,.027,z);
-    }
-    S.beam(hand,glove,[-.054,-.008,.09],[-.06,.047,.035],.014);
-    S.beam(gun,cloth,[.19,-.36,.57],[.069,-.16,.21],.072);
-    S.mesh(gun,new T.SphereGeometry(.065,18,12),glove,.045,-.14,.198).scale.set(.85,1.1,1.0);
-    for(let i=0;i<3;i++){const y=-.15-i*.029;S.beam(gun,glove,[.063,y,.232],[-.027,y,.199],.013);}
-    S.beam(gun,glove,[.064,-.13,.188],[.063,-.14,.086],.011);
-    for(let i=0;i<6;i++){
-      const a=i*.028;S.beam(gun,rubber,[.126+a*.3,-.25-a*.7,.34+a],[.073+a*.3,-.23-a*.7,.32+a],.009);
-    }
-    const label=S.label(gun,'K–18',.071,.005,.12,.075,.026,'#d2c8a4');label.rotation.y=Math.PI/2;
-    const bars=[];for(let i=0;i<6;i++){const bar=S.box(gun,new T.MeshBasicMaterial({color:'#bd9a61'}),.077,.04,-.135+i*.016,.003,.006,.008,false);bars.push(bar);}
-    const flashG=new T.Group();flashG.position.set(0,.014,-1.04);gun.add(flashG);
-    const fm=new T.MeshBasicMaterial({map:S.softTexture(),color:'#ffdb9d',transparent:true,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide,toneMapped:false});
-    for(let i=0;i<3;i++){const f=S.mesh(flashG,new T.PlaneGeometry(.14,.38),fm,0,0,-.08,false);f.rotation.x=Math.PI/2;f.rotation.z=i*Math.PI/3;}
-    const flare=new T.Sprite(new T.SpriteMaterial({map:S.softTexture(),color:'#ffeac5',transparent:true,blending:T.AdditiveBlending,depthWrite:false,toneMapped:false}));flare.scale.set(.14,.14,1);flashG.add(flare);flashG.visible=false;
-    const light=new T.PointLight('#ffc57e',0,2.4,2);light.position.set(.04,.05,-.9);gun.add(light);
-    gun.userData.mag=mag;
-    root.userData={gun,mag,bolt,hand,flash:flashG,light,reticle,bars,baseHand:hand.position.clone()};
-    root.traverse(o=>{if(o.isMesh){o.frustumCulled=false;o.castShadow=false;o.receiveShadow=false;}});
+    const steel='#3a4043',edge='#7d8385',ceramic='#6b6252',brass='#9c7a3e',cloth='#5d5341',glove='#2f2b26',suit='#4a4438',plate='#3d3a33';
+    const b=new S.Batch();
+    // Receiver and upper.
+    b.tint(steel).cbox(kit,0,0,-.03,.05,.078,.34,.008).cbox(kit,0,.048,-.07,.044,.03,.26,.006);
+    b.tint(ceramic).cbox(kit,0,-.004,-.36,.052,.062,.33,.01);                         // handguard
+    b.tint(steel).cbox(kit,0,.033,-.36,.036,.02,.33,.004);                           // top strap
+    for(let i=0;i<9;i++){b.tint(C.black,M.polymer);for(const s of [-1,1])b.cbox(kit,s*.0265,.006,-.225-i*.033,.003,.022,.02,.002);b.tint(steel).cbox(kit,0,.046,-.212-i*.033,.03,.008,.014,.002);}
+    b.tint(steel);for(let i=0;i<7;i++)b.cbox(kit,0,.068,-.16+i*.033,.03,.008,.014,.002);  // receiver rail
+    // Barrel, gas block and ported muzzle brake.
+    b.tint(steel).cyl(kit,0,.008,-.61,.0115,.2,14,'z').cbox(kit,0,.014,-.545,.03,.04,.035,.005);
+    b.tint(edge,M.metal).add(kit,S.geo.lathe([[.012,0],[.019,.004],[.019,.03],[.0165,.034],[.0165,.05],[.019,.054],[.019,.078],[.014,.082],[.0085,.082]],16,'brake'),0,.008,-.708,-Math.PI/2,0,0);
+    b.tint(C.black,M.polymer);for(const s of [-1,1])for(const z of [-.725,-.749,-.773])b.cbox(kit,s*.0185,.008,z,.004,.012,.012,.001);
+    // Fremen cloth wrap and cord on the handguard.
+    b.tint(cloth,M.cloth);for(let i=0;i<5;i++)b.cyl(kit,0,-.004,-.42-i*.021,.0405+((i%2)*.0015),.023,10,'z');
+    b.tint('#8a3d22',M.cloth).cyl(kit,0,-.004,-.398,.042,.008,10,'z').cyl(kit,0,-.004,-.512,.042,.008,10,'z');
+    // Lower: grip, trigger group, magazine well.
+    b.tint(steel).cbox(kit,0,-.052,-.065,.046,.04,.1,.006);
+    b.tint(C.rubber,M.polymer).cbox(kit,0,-.095,.078,.04,.12,.05,.012,.3,0,0);
+    b.tint(steel).beam(kit,[0,-.04,.05],[0,-.085,.035],.004,6).beam(kit,[0,-.085,.035],[0,-.085,-.005],.004,6).beam(kit,[0,-.085,-.005],[0,-.045,-.012],.004,6);
+    b.tint(brass,M.metal).cbox(kit,0,-.058,.028,.006,.03,.008,.002,.25,0,0);
+    // Skeleton stock.
+    b.tint(steel).cbox(kit,0,-.004,.2,.024,.026,.14,.006).beam(kit,[0,-.03,.14],[0,-.055,.3],.008,8).cbox(kit,0,-.02,.31,.034,.12,.03,.008);
+    b.tint(C.rubber,M.polymer).cbox(kit,0,-.02,.33,.038,.125,.018,.006);
+    // Ejection port, forward assist, selector, pins.
+    b.tint(C.black,M.polymer).cbox(kit,.0255,.022,-.06,.003,.022,.07,.002);
+    b.tint(edge,M.metal);for(const z of [-.15,.02,.09])for(const s of [-1,1])b.cyl(kit,s*.0255,-.012,z,.005,.004,8,'x');
+    b.tint(brass,M.metal).cbox(kit,-.027,-.018,.045,.004,.008,.022,.002,0,0,.5);
+    b.tint(edge,M.metal).cbox(kit,0,.024,-.522,.008,.05,.008,.002).cbox(kit,0,.05,-.522,.02,.006,.012,.002);   // front post
+    // Reflex sight: base, hood, emitter.
+    b.tint(steel).cbox(kit,0,.071,SIGHT_Z,.036,.012,.07,.003);
+    for(const s of [-1,1])b.cbox(kit,s*.0205,SIGHT_Y+.003,SIGHT_Z-.012,.004,.046,.034,.002);
+    b.cbox(kit,0,SIGHT_Y+.027,SIGHT_Z-.012,.045,.004,.034,.002).cbox(kit,0,.082,SIGHT_Z+.024,.03,.012,.018,.003);
+    b.tint(brass,M.metal).cyl(kit,.028,.08,SIGHT_Z+.02,.006,.008,8,'x');
+    // Grip hand: palm, wrapped fingers, thumb, cuff and forearm.
+    b.tint(glove,M.polymer).cbox(kit,.012,-.085,.098,.062,.1,.05,.018,.3,0,0);
+    for(let i=0;i<3;i++){const y=-.062-i*.024;b.beam(kit,[.03,y,.07+i*.008],[-.008,y,.04+i*.008],.0105,8,.0095).beam(kit,[-.008,y,.04+i*.008],[-.03,y+.004,.062+i*.008],.0095,8,.0085);b.tint(plate).cbox(kit,.014,y,.052+i*.008,.022,.017,.014,.004,0,.6,0).tint(glove,M.polymer);}
+    b.beam(kit,[.03,-.038,.07],[.008,-.04,.03],.0105,8,.009);                                   // trigger finger
+    b.beam(kit,[.02,-.05,.11],[-.026,-.022,.085],.0125,8,.01);                                  // thumb
+    b.tint(suit,M.cloth).beam(kit,[.03,-.13,.13],[.12,-.33,.42],.045,14,.062);
+    b.tint(plate).cyl(kit,.043,-.152,.158,.05,.03,14,'z');for(let i=0;i<5;i++)b.tint(C.rubber,M.polymer).beam(kit,[.058+i*.014,-.185-i*.031,.2+i*.045],[.063+i*.014,-.196-i*.031,.216+i*.045],.057+i*.003,14);
+    b.build(gun,{cast:false,receive:false});
+    K.decal({m:new T.Matrix4()},S.insignia.glyphs(81,3,'#b9a57a'),.0256,.004,.03,1,0,0,.07);K.decal({m:new T.Matrix4()},S.insignia.text('K-18','#b9a57a'),-.0256,.004,-.02,-1,0,0,.06);S.insignia.build(gun);
+    // Bolt carrier with charging handle.
+    const bolt=new T.Group();const bb=new S.Batch();bb.tint(edge,M.metal).cbox(kit,.024,.022,-.06,.004,.018,.06,.002).tint(brass,M.metal).cyl(kit,.034,.022,-.04,.005,.018,8,'x');bb.build(bolt,{cast:false,receive:false});gun.add(bolt);
+    // Magazine with witness window.
+    const mag=new T.Group();mag.position.set(0,-.07,-.068);const mb=new S.Batch();
+    mb.tint(steel).cbox(kit,0,-.07,-.006,.03,.15,.064,.006,-.1,0,0).tint(edge,M.metal).cbox(kit,0,-.149,-.014,.034,.012,.07,.003,-.1,0,0);
+    mb.tint(brass,M.metal,.15);for(const s of [-1,1])mb.cbox(kit,s*.0155,-.07,-.006,.002,.09,.012,.001,-.1,0,0);
+    mb.tint(steel);for(let i=0;i<4;i++)for(const s of [-1,1])mb.cbox(kit,s*.0158,-.03-i*.028,.014,.002,.004,.03,.001,-.1,0,0);
+    mb.build(mag,{cast:false,receive:false});gun.add(mag);
+    // Support arm: hand under the handguard.
+    const hand=new T.Group();hand.position.set(0,-.04,-.36);const hb=new S.Batch();
+    hb.tint(glove,M.polymer).cbox(kit,-.004,-.012,0,.07,.03,.1,.012);
+    for(let i=0;i<4;i++){const z=-.036+i*.024;hb.beam(kit,[.03,-.008,z],[.043,.034,z],.0105,8,.0095).beam(kit,[.043,.034,z],[.03,.058,z],.0095,8,.0085);hb.tint(plate).cbox(kit,.045,.014,z,.012,.022,.018,.003).tint(glove,M.polymer);}
+    hb.beam(kit,[-.03,-.008,.03],[-.044,.04,.012],.012,8,.01);
+    hb.tint(suit,M.cloth).beam(kit,[-.01,-.03,.04],[-.2,-.2,.42],.043,14,.064);hb.tint(plate).cyl(kit,-.022,-.045,.07,.048,.03,14,'z');
+    for(let i=0;i<5;i++)hb.tint(C.rubber,M.polymer).beam(kit,[-.05-i*.03,-.068-i*.027,.13+i*.058],[-.057-i*.03,-.075-i*.027,.146+i*.058],.054+i*.003,14);
+    hb.build(hand,{cast:false,receive:false});gun.add(hand);
+    // Coated sight glass and etched reticle.
+    const glass=new T.Mesh(new T.PlaneGeometry(.037,.04),new T.MeshPhysicalMaterial({color:'#c7a47a',metalness:.3,roughness:.05,transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide,envMapIntensity:2}));glass.position.set(0,SIGHT_Y+.004,SIGHT_Z-.026);gun.add(glass);
+    const reticle=new T.Group();reticle.position.set(0,SIGHT_Y,SIGHT_Z-.0265);gun.add(reticle);
+    const rm=new T.MeshBasicMaterial({color:'#ff7a3c',transparent:true,opacity:.95,toneMapped:false,depthWrite:false,depthTest:false});
+    const ring=new T.Mesh(new T.RingGeometry(.0042,.0047,36),rm),dot=new T.Mesh(new T.CircleGeometry(.0009,14),rm);reticle.add(ring,dot);
+    for(const a of [0,Math.PI/2,Math.PI,-Math.PI/2]){const t=new T.Mesh(new T.PlaneGeometry(.0028,.0006),rm);t.position.set(Math.cos(a)*.0068,Math.sin(a)*.0068,0);t.rotation.z=a;reticle.add(t);}
+    reticle.traverse(o=>{o.renderOrder=5;});rm.color.multiplyScalar(2.2);
+    // Muzzle flash: generated star sprite on crossed cards plus a facing bloom.
+    const fc=document.createElement('canvas');fc.width=fc.height=128;const fg=fc.getContext('2d'),fr=S.rng(77);fg.translate(64,64);
+    for(let i=0;i<22;i++){const a=fr()*6.28,l=20+fr()*42,w=3+fr()*7,gr=fg.createLinearGradient(0,0,Math.cos(a)*l,Math.sin(a)*l);gr.addColorStop(0,'rgba(255,244,214,.95)');gr.addColorStop(.4,'rgba(255,190,96,.6)');gr.addColorStop(1,'rgba(255,120,30,0)');fg.fillStyle=gr;fg.beginPath();fg.moveTo(Math.cos(a+1.57)*w,Math.sin(a+1.57)*w);fg.lineTo(Math.cos(a)*l,Math.sin(a)*l);fg.lineTo(Math.cos(a-1.57)*w,Math.sin(a-1.57)*w);fg.fill();}
+    const core=fg.createRadialGradient(0,0,0,0,0,26);core.addColorStop(0,'rgba(255,255,240,1)');core.addColorStop(1,'rgba(255,200,120,0)');fg.fillStyle=core;fg.fillRect(-64,-64,128,128);
+    const ft=new T.CanvasTexture(fc),fm=new T.MeshBasicMaterial({map:ft,transparent:true,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide,toneMapped:false});fm.color.setScalar(3);
+    const flash=new T.Group();flash.position.set(0,.008,-.8);gun.add(flash);
+    for(let i=0;i<2;i++){const f=new T.Mesh(new T.PlaneGeometry(.11,.3),fm);f.rotation.set(Math.PI/2,0,i*Math.PI/2,'ZXY');f.position.z=-.1;flash.add(f);}
+    const face=new T.Mesh(new T.PlaneGeometry(.17,.17),fm);face.position.z=-.02;flash.add(face);flash.visible=false;
+    const light=new T.PointLight('#ffc57e',0,2.2,2);light.position.set(.05,.06,-.7);gun.add(light);
+    root.userData={gun,mag,bolt,hand,flash,light,reticle,glass,sight:new T.Vector3(0,SIGHT_Y,SIGHT_Z),baseHand:hand.position.clone(),baseMag:mag.position.clone(),muzzle:new T.Vector3(0,.008,-.8)};
+    root.traverse(o=>{if(o.isMesh)o.frustumCulled=false;});
     return root;
   };
-  S.poseWeapon=function(game){
-    const p=game.player,a=p.aim,w=game.weapon,u=w.userData;
-    const move=Math.min(1,Math.hypot(p.vel.x,p.vel.z)/4.6),motion=game.motionReduced?.3:1;
-    const bob=Math.sin(p.bob)*.0065*move*(1-a)*motion;
-    const reload=game.reloadTime>0?1-game.reloadTime/game.reloadDuration:0;
-    const ease=x=>{x=S.clamp(x,0,1);return x*x*(3-2*x);};
-    const tilt=reload>0?ease(reload/.17)*(1-ease((reload-.73)/.27)):0;
-    const drop=reload>0?ease((reload-.15)/.15)*(1-ease((reload-.47)/.22)):0;
-    const sprint=p.sprinting?1:0;game.sprintPose=S.damp(game.sprintPose||0,sprint,10,game.lastDt||1/60);
-    w.position.set(S.lerp(.285,0,a)+bob+game.weaponSway.x,S.lerp(-.285,-.152,a)-tilt*.12+Math.cos(p.bob*2)*.002*move,S.lerp(-.95,-.80,a)+(game.kickPosition||0)+tilt*.08);
-    w.rotation.set((game.kickAngle||0)+tilt*.28+game.sprintPose*.18,-tilt*.28+game.weaponSway.x*.4,tilt*-.5+bob*.8+game.sprintPose*.16+game.weaponSway.y*.45);
-    u.mag.position.set(0,-.155-drop*.29,.01+drop*.06);u.mag.rotation.x=drop*.18;
-    u.bolt.position.z=-.06+Math.min(.07,(game.kickPosition||0)*2.5);
-    u.hand.position.copy(u.baseHand).add(S.v(.035*tilt,-.12*drop,.43*tilt));u.hand.rotation.set(tilt*.55,0,tilt*-.5);
-    u.flash.visible=game.flash>0;u.flash.rotation.z=game.shots*2.399;u.flash.scale.setScalar(.85+Math.sin(game.time*81)*.15);
-    u.light.intensity=game.flash>0?7:0;u.reticle.visible=true;
-    for(let i=0;i<u.bars.length;i++)u.bars[i].visible=game.ammo>i*3;
+
+  const ez=x=>{x=S.clamp(x,0,1);return x*x*(3-2*x);},seg=(t,a,b)=>ez((t-a)/(b-a));
+  S.poseWeapon=function(game,dt){
+    const p=game.player,w=game.weapon,u=w.userData,g=u.gun,a=ez(p.aim),motion=game.motionReduced?.3:1;
+    const speed=Math.hypot(p.vel.x,p.vel.z),move=Math.min(1,speed/4.6)*(p.grounded?1:.25);
+    game.sprintPose=S.damp(game.sprintPose||0,p.sprinting&&speed>4?1:0,9,dt);game.lowerPose=S.damp(game.lowerPose||0,game.weaponLowered?1:0,8,dt);
+    game.equip=S.damp(game.equip??1,0,3.2,dt);
+    const sp=game.sprintPose*(1-a),low=Math.max(game.lowerPose,game.equip);
+    // Stride: lateral figure-of-eight, stronger when sprinting, nearly still in ADS.
+    const k=(1-a*.86)*motion,bx=Math.sin(p.bob)*(.0055+.011*sp)*move*k,by=(Math.abs(Math.cos(p.bob))*(.0065+.012*sp)-.003)*move*k;
+    const breathe=Math.sin(game.time*1.3)*.0016*(1-a*.6),sw=game.weaponSway;
+    // Reload beats: cant, strip, seat, charge.
+    let cant=0,drop=0,reach=0,charge=0;
+    if(game.reloadTime>0){const t=1-game.reloadTime/game.reloadDuration;cant=seg(t,0,.14)*(1-seg(t,.82,1));drop=seg(t,.16,.3)*(1-seg(t,.46,.6));reach=seg(t,.1,.26)*(1-seg(t,.62,.74));charge=seg(t,.72,.8)*(1-seg(t,.86,.94));}
+    const hipX=.115,hipY=-.118,hipZ=-.31;
+    w.position.set(S.lerp(hipX,0,a)+bx+sw.x*.9+sp*.035+low*.05-cant*.035,
+      S.lerp(hipY,-u.sight.y,a)-by+breathe+sw.y*.7-sp*.045-low*.16+cant*.035-(game.landPulse||0)*1.4+(p.grounded?0:S.clamp(p.vy*.0035,-.02,.02)),
+      S.lerp(hipZ,-.25,a)+(game.kickPosition||0)*(1-a*.35)+sp*.05+low*.06+cant*.03);
+    w.rotation.set((game.kickAngle||0)*(1-a*.5)+sw.y*1.5-sp*.38-low*.75+cant*.34-by*1.2,
+      S.lerp(.045,0,a)+sw.x*2.2+sp*.85+low*.5-cant*.42+bx*1.5,
+      S.lerp(.02,0,a)-sw.x*3.2+sp*.3-cant*.72+bx*2.4+(game.kickRoll||0),'YXZ');
+    u.mag.position.set(u.baseMag.x,u.baseMag.y-drop*.26,u.baseMag.z+drop*.03);u.mag.rotation.x=drop*.3;u.mag.visible=drop<.97;
+    u.bolt.position.z=Math.min(.055,Math.max(0,(game.kickPosition||0))*4.5)+charge*.05;
+    u.hand.position.copy(u.baseHand).add(S.v(-reach*.03+charge*.06,-reach*.075-drop*.2+charge*.11,reach*.2+drop*.06+charge*.28));
+    u.hand.rotation.set(reach*.5-charge*.3,-charge*.4,reach*-.35);
+    u.flash.visible=game.flash>0;if(u.flash.visible){u.flash.rotation.z=game.shots*2.399;u.flash.scale.setScalar(.75+((game.shots*.37)%1)*.6);}
+    u.light.intensity=game.flash>0?9:0;
+    u.reticle.visible=a>.2;u.reticle.children.forEach(c=>{c.material.opacity=.95*a;});
   };
 })(window.Spice,window.THREE);
