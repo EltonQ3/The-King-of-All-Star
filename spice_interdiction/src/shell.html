@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>香料斷流 · SPICE INTERDICTION</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23171d1c'/%3E%3Cpath d='M5 23L16 6l11 17z' fill='none' stroke='%23dab884'/%3E%3C/svg%3E">
+<style>/*__STYLE__*/</style>
+</head>
+<body>
+<canvas id="view" aria-label="第一人稱射擊遊戲畫面"></canvas>
+<div class="vignette" aria-hidden="true"></div><div id="damage" aria-hidden="true"></div>
+<section id="boot"><div class="boot-word">香料斷流</div><p>正在建立沙海、岩層與採收設施</p><div class="boot-line"></div><small>LOCAL GENERATION / NO ASSET DOWNLOADS</small></section>
+<section id="title" hidden>
+  <div class="title-scrim"></div><div class="top-line"><span class="sigil">△</span><span>SPICE INTERDICTION</span><span class="build">OFFLINE BUILD / 0.2</span></div>
+  <main class="title-content">
+    <div class="eyebrow">ARRAKIS · SECTOR 09</div><h1>香料<span>斷流</span></h1>
+    <div class="title-rule"></div><p class="lead">沙海不會記住你的腳印。<br>但前哨會記住最後一聲槍響。</p>
+    <p class="brief">穿越岩隙，清除採收前哨守衛。<br>在北側石門與接應隊會合。</p>
+    <div class="title-actions"><button id="start" class="primary"><span>進入岩隙</span><b>→</b></button><button id="controls-button" class="text-button">操作說明 ＋</button></div>
+    <label class="quality-label">畫質 <select id="quality"><option value="high">高 · HDR / 接觸陰影</option><option value="ultra">極高 · 精細陰影</option><option value="low">低 · 優先效能</option></select></label>
+  </main>
+  <div class="side-caption"><span>09 / HARVEST OUTPOST</span><i></i><span>THE DESERT TAKES EVERYTHING.</span></div>
+  <footer><span>《沙丘》靈感原創關卡 · 非官方技術試作</span><span>THREE.JS / WEBGL 2 / PROCEDURAL</span></footer>
+</section>
+<section id="hud" hidden>
+  <div class="objective"><small>行動目標 <em id="kills">0 / 6</em></small><strong id="objective">穿越岩隙，接近採收前哨</strong><span>09 · 香料採收區</span></div>
+  <div class="compass"><div class="compass-window"><div id="compass-tape"></div><i class="compass-needle"></i></div><b id="heading">000°</b></div>
+  <button id="pause-button" class="pause-icon" aria-label="暫停">Ⅱ</button>
+  <div id="crosshair"><i></i><i></i><i></i><i></i><b></b></div><div id="hitmark">×</div><div id="hit-label"></div><div id="damage-direction"><i></i></div>
+  <div id="marker"><div class="diamond"></div><small id="marker-label">採收前哨</small><b id="distance">60 m</b></div>
+  <div class="health-panel"><small>蒸餾服 / 生命</small><div><b id="health">100</b><span>完整性</span></div><div class="health-track"><i id="health-fill"></i></div></div>
+  <div class="ammo-panel"><small id="reload-label"></small><div><b id="ammo">18</b><span> / <i id="reserve">126</i></span></div><div class="reload-track"><i id="reload-progress"></i></div><p>K–18 / 沙行者</p></div>
+  <div id="seismic" hidden><div><small>SEISMIC / 地底震源</small><b id="seismic-level">00</b></div><canvas id="seismic-graph" width="180" height="36"></canvas><span id="seismic-label">地底訊號</span><i>東北沙海 ↗</i></div><p id="message" role="status"></p><div class="key-hint">WASD 移動 <span>·</span> 右鍵瞄準 <span>·</span> R 換彈 <span>·</span> ESC 暫停</div>
+</section>
+<section id="pause" class="modal" hidden><div class="card"><small>FIELD OPERATIONS / HOLD</small><h2>暫停行動</h2><p>離開這個視窗不會繼續戰鬥。</p><button id="resume" class="primary">繼續行動 →</button><button id="restart">重新開始</button><div class="settings"><label>畫質<select id="quality-pause"><option value="high">高</option><option value="ultra">極高</option><option value="low">低</option></select></label><label>減少鏡頭晃動<input id="motion" type="checkbox"></label><label>視野<input id="fov" type="range" min="60" max="95" step="1" value="73"></label><label>音量<input id="volume" type="range" min="0" max="1" step=".05" value=".6"></label><label>視角靈敏度<input id="sensitivity" type="range" min=".3" max="2" step=".1" value="1"></label></div></div></section>
+<section id="dead" class="modal" hidden><div class="card"><small>VITAL SIGNAL / LOST</small><h2>訊號中斷</h2><p>守衛瞄準前，面罩會亮起。<br>利用低牆與岩石阻擋射線；脫離火力後生命會恢復。</p><button id="retry" class="primary">重新進入岩隙 →</button></div></section>
+<section id="complete" class="modal" hidden><div class="card debrief"><small>EXTRACTION / CONFIRMED</small><h2>離開沙海</h2><p>六名守衛已清除。你已抵達接應點。</p><dl><div><dt>行動用時</dt><dd id="final-time">0:00</dd></div><div><dt>射擊命中率</dt><dd id="final-accuracy">0%</dd></div><div><dt>發射次數</dt><dd id="final-shots">0</dd></div></dl><button id="again" class="primary">再次行動 →</button><p class="footnote">第二階段切片 · 地底預警已加入；不包含沙蟲頭目戰。</p></div></section>
+<section id="help" class="modal" hidden><div class="card"><small>FIELD MANUAL / 01</small><h2>行動指南</h2><dl><div><dt>移動 / 視角</dt><dd>WASD / 滑鼠</dd></div><div><dt>射擊 / 瞄準</dt><dd>左鍵 / 按住右鍵</dd></div><div><dt>換彈 / 跳躍</dt><dd>R / Space</dd></div><div><dt>衝刺 / 蹲下</dt><dd>Shift / C</dd></div><div><dt>暫停</dt><dd>Esc</dd></div></dl><p>滑鼠鎖定不受支援時，可按住左鍵拖曳轉向，亦可使用方向鍵轉向。觸控裝置以左下搖桿移動，在畫面右側拖曳轉向。</p><p>先擊退三名守衛，再清除三名增援。全部清除後，前往北側接應光柱即可完成。交戰後可觸發沙蟲預警：震源從東側沙海掠過，這個版本不會造成額外傷害。</p><button id="help-close" class="primary">返回 →</button></div></section>
+<div id="touch" hidden><div id="move-pad"><span id="move-nub"></span></div><div class="touch-actions"><button data-action="ads">瞄準</button><button data-action="reload">換彈</button><button data-action="jump">跳躍</button><button data-action="fire" class="fire">開火</button></div></div>
+<noscript>此離線遊戲需要啟用 JavaScript。</noscript>
+<script>/*__CODE__*/</script>
+</body></html>
